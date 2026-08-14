@@ -725,11 +725,11 @@
                 }
             } else {
                 // Stop sound with fade out
-                const fadeOutDuration = 1; // 1 second fade out
+                const fadeOutDuration = 2; // 2 seconds for smooth fade out
                 const stopTime = audioContext.currentTime + fadeOutDuration;
 
                 oscillators.forEach(({ osc, lfo, gain }) => {
-                    // Fade out volume over 1 second
+                    // Fade out volume over 2 seconds
                     gain.gain.linearRampToValueAtTime(0, stopTime);
 
                     // Stop oscillators after fade out completes
@@ -737,14 +737,14 @@
                     lfo.stop(stopTime);
                 });
 
-                // Clean up after fade out
+                // Clean up after fade out (with buffer)
                 setTimeout(() => {
                     oscillators = [];
                     if (audioContext && audioContext.state !== 'closed') {
                         audioContext.close();
                     }
                     audioContext = null;
-                }, fadeOutDuration * 1000);
+                }, (fadeOutDuration + 0.1) * 1000); // Small buffer after fade
 
                 soundStarted = false;
                 if (hint) {
