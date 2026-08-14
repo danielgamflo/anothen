@@ -698,7 +698,11 @@
 
                     osc.type = 'sine';
                     osc.frequency.value = freq;
-                    gain.gain.setValueAtTime((baseVolume / (index + 1)) * 0.8, audioContext.currentTime); // Layered, decreasing volume
+
+                    // Start with volume 0, fade in to target volume over 1 second
+                    const targetVolume = (baseVolume / (index + 1)) * 0.8;
+                    gain.gain.setValueAtTime(0, audioContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(targetVolume, audioContext.currentTime + 1);
 
                     // Slow, smooth LFO for ethereal effect
                     const lfo = audioContext.createOscillator();
@@ -720,16 +724,27 @@
                     hint.textContent = 'click para desactivar el sonido';
                 }
             } else {
-                // Stop sound
-                oscillators.forEach(({ osc, lfo }) => {
-                    osc.stop(audioContext.currentTime);
-                    lfo.stop(audioContext.currentTime);
+                // Stop sound with fade out
+                const fadeOutDuration = 1; // 1 second fade out
+                const stopTime = audioContext.currentTime + fadeOutDuration;
+
+                oscillators.forEach(({ osc, lfo, gain }) => {
+                    // Fade out volume over 1 second
+                    gain.gain.linearRampToValueAtTime(0, stopTime);
+
+                    // Stop oscillators after fade out completes
+                    osc.stop(stopTime);
+                    lfo.stop(stopTime);
                 });
-                oscillators = [];
-                if (audioContext && audioContext.state !== 'closed') {
-                    audioContext.close();
-                }
-                audioContext = null;
+
+                // Clean up after fade out
+                setTimeout(() => {
+                    oscillators = [];
+                    if (audioContext && audioContext.state !== 'closed') {
+                        audioContext.close();
+                    }
+                    audioContext = null;
+                }, fadeOutDuration * 1000);
 
                 soundStarted = false;
                 if (hint) {
