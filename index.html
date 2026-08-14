@@ -544,17 +544,33 @@
         const radius = isDesktop ? 250 : 150; // Radius of the reveal circle in px (larger on desktop)
         const fadeRadius = isDesktop ? 100 : 70; // Fade/gradient radius in px
 
-        document.addEventListener('mousemove', function(e) {
-            const x = e.clientX;
-            const y = e.clientY;
-
+        function updateRevealCircle(x, y) {
             const maskGradient = `radial-gradient(circle at ${x}px ${y}px, transparent 0%, transparent ${radius - fadeRadius}px, black ${radius}px)`;
             blurredOverlay.style.webkitMaskImage = maskGradient;
             blurredOverlay.style.maskImage = maskGradient;
+        }
+
+        // Desktop mouse move
+        document.addEventListener('mousemove', function(e) {
+            updateRevealCircle(e.clientX, e.clientY);
         });
 
-        // Reset on mouse leave - show full blur
+        // Mobile touch move
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 0) {
+                const touch = e.touches[0];
+                updateRevealCircle(touch.clientX, touch.clientY);
+            }
+        }, { passive: true });
+
+        // Reset on mouse leave
         document.addEventListener('mouseleave', function() {
+            blurredOverlay.style.webkitMaskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
+            blurredOverlay.style.maskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
+        });
+
+        // Reset on touch end
+        document.addEventListener('touchend', function() {
             blurredOverlay.style.webkitMaskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
             blurredOverlay.style.maskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
         });
@@ -635,7 +651,15 @@
             if (!soundStarted) {
                 // Start sound
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+                // Resume audio context on mobile (required for autoplay policy)
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume().catch(e => console.log('Audio resume failed:', e));
+                }
+
                 const frequencies = [110, 165, 220, 277];
+                const isMobile = window.innerWidth <= 768;
+                const baseVolume = isMobile ? 0.15 : 0.08; // Higher volume on mobile
 
                 frequencies.forEach((freq, index) => {
                     const osc = audioContext.createOscillator();
@@ -646,14 +670,14 @@
 
                     osc.type = 'sine';
                     osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.08 + (Math.random() * 0.04), audioContext.currentTime);
+                    gain.gain.setValueAtTime(baseVolume + (Math.random() * 0.04), audioContext.currentTime);
 
                     const lfo = audioContext.createOscillator();
                     const lfoGain = audioContext.createGain();
                     lfo.frequency.value = 0.3 + (index * 0.1);
                     lfo.connect(lfoGain);
                     lfoGain.connect(gain.gain);
-                    lfoGain.gain.value = 0.02;
+                    lfoGain.gain.value = isMobile ? 0.04 : 0.02; // More noticeable on mobile
 
                     osc.start(audioContext.currentTime);
                     lfo.start(audioContext.currentTime);
@@ -672,7 +696,9 @@
                     lfo.stop(audioContext.currentTime);
                 });
                 oscillators = [];
-                audioContext.close();
+                if (audioContext && audioContext.state !== 'closed') {
+                    audioContext.close();
+                }
                 audioContext = null;
 
                 soundStarted = false;
