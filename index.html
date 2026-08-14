@@ -370,6 +370,19 @@
             box-shadow: 0 0 6px rgba(242, 230, 218, 0.8), 0 0 12px rgba(242, 230, 218, 0.5);
         }
 
+        /* Subscription hint */
+        .subscription-hint {
+            font-size: 12px;
+            color: rgba(242, 230, 218, 0.65);
+            letter-spacing: 0.03em;
+            text-align: center;
+            margin-top: 1rem;
+            line-height: 1.5;
+            font-weight: 300;
+            opacity: 0.8;
+            animation: fadeInUp 0.8s ease-out 0.9s both;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .logo-area {
@@ -473,7 +486,7 @@
             }
 
             .subscription-form button {
-                font-size: 16px;
+                font-size: 14px;
                 padding: 0.75rem 1rem;
                 border-radius: 0 0 4px 4px;
             }
@@ -515,6 +528,10 @@
             <div class="success-message" id="successMessage">
                 ✓ Gracias. Te notificaremos pronto.
             </div>
+
+            <p class="subscription-hint">
+                Síguelo de cerca. Serás de los primeros en saber cuándo llegamos.
+            </p>
         </div>
     </div>
 
