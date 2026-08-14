@@ -103,13 +103,13 @@
             text-align: center;
             z-index: 10;
             color: #403e2c;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
+            animation: fadeInUp 0.8s ease-out 0.2s both, breathe 6s ease-in-out 1s infinite;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
         .logo-area:hover {
-            transform: scale(1.05) rotateZ(2deg);
+            transform: scale(1.05) !important;
         }
 
         .logo-icon {
@@ -157,6 +157,11 @@
             text-transform: uppercase;
             color: #4d473d;
             animation: fadeInUp 0.8s ease-out 0.4s both, glow 3s ease-in-out 1.2s infinite;
+            background: linear-gradient(90deg, transparent 0%, rgba(242, 230, 218, 0.4) 50%, transparent 100%);
+            background-size: 1000px 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: fadeInUp 0.8s ease-out 0.4s both, glow 3s ease-in-out 1.2s infinite, shimmer 3s linear infinite;
         }
 
         /* Separator line */
@@ -166,6 +171,14 @@
             background-color: rgba(255, 255, 255, 0.5);
             margin: 0.5rem 0;
             animation: growLine 0.8s ease-out 0.6s both;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .separator:hover {
+            background-color: rgba(242, 230, 218, 0.9);
+            box-shadow: 0 0 8px rgba(242, 230, 218, 0.6);
+            width: 2px;
         }
 
         /* Description text */
@@ -176,7 +189,7 @@
             max-width: min(60vw, 500px);
             font-weight: 300;
             letter-spacing: 0.02em;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 0 15px rgba(242, 230, 218, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
             opacity: 0.95;
             animation: fadeInUp 0.8s ease-out 0.7s both;
             color: #f2e6da;
@@ -191,7 +204,6 @@
             flex-wrap: wrap;
             justify-content: center;
             max-width: 100%;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             animation: fadeInUp 0.8s ease-out 0.8s both;
         }
 
@@ -202,7 +214,7 @@
             font-size: 14px;
             background-color: #f1e4d9;
             color: #423c33;
-            min-width: 250px;
+            min-width: 350px;
             transition: all 0.3s ease;
             flex: 1;
             min-width: 200px;
@@ -216,7 +228,7 @@
         .subscription-form input:focus {
             outline: none;
             background-color: #ffffff;
-            box-shadow: inset 0 0 0 2px #403e2c, 0 4px 20px rgba(64, 62, 44, 0.2);
+            box-shadow: inset 0 0 0 2px #403e2c;
             transition: all 0.3s ease;
         }
 
@@ -296,6 +308,60 @@
             50% {
                 text-shadow: 0 0 40px rgba(219, 212, 202, 0.6);
             }
+        }
+
+        @keyframes breathe {
+            0%, 100% {
+                opacity: 0.85;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.08);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(var(--tx, 0px));
+                opacity: 0;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        /* Particle styles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(242, 230, 218, 0.9) 0%, rgba(242, 230, 218, 0) 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(242, 230, 218, 0.8), 0 0 12px rgba(242, 230, 218, 0.5);
         }
 
         /* Responsive design */
@@ -399,6 +465,10 @@
 </head>
 <body>
     <div id="blurred-overlay"></div>
+    <div id="particles-container"></div>
+    <div id="sound-hint" style="position: fixed; bottom: 2rem; left: 0; right: 0; width: fit-content; margin: 0 auto; font-family: 'Georgia', serif; font-size: 12px; color: rgba(242, 230, 218, 0.6); letter-spacing: 0.05em; text-align: center; z-index: 5; opacity: 0; animation: fadeInUp 0.8s ease-out 1.5s both; cursor: pointer;">
+        haz click para activar el sonido
+    </div>
     <div class="container">
         <div class="logo-area">
             <div class="logo-icon">⛰</div>
@@ -481,6 +551,129 @@
         document.addEventListener('mouseleave', function() {
             blurredOverlay.style.webkitMaskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
             blurredOverlay.style.maskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 60;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                const startX = Math.random() * window.innerWidth;
+                const duration = 8 + Math.random() * 12; // 8-20 seconds
+                const delay = Math.random() * 5;
+
+                particle.style.left = startX + 'px';
+                particle.style.top = window.innerHeight + 'px';
+                particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Create ambient enchanted background music
+        function createAmbientBackgroundMusic() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Create multiple oscillators for a rich ambient pad
+            function createAmbientPad() {
+                const frequencies = [110, 165, 220, 277]; // Deep magical frequencies
+                const oscillators = [];
+                const gains = [];
+
+                frequencies.forEach((freq, index) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+
+                    // Gentle volume with slight variation
+                    gain.gain.setValueAtTime(0.08 + (Math.random() * 0.04), audioContext.currentTime);
+
+                    // Create subtle wave modulation
+                    const lfo = audioContext.createOscillator();
+                    const lfoGain = audioContext.createGain();
+                    lfo.frequency.value = 0.3 + (index * 0.1); // Slow modulation
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(gain.gain);
+                    lfoGain.gain.value = 0.02;
+
+                    osc.start(audioContext.currentTime);
+                    lfo.start(audioContext.currentTime);
+
+                    oscillators.push(osc);
+                    gains.push(gain);
+                });
+            }
+
+            createAmbientPad();
+        }
+
+        // Toggle ambient sound with click
+        let soundStarted = false;
+        let audioContext = null;
+        let oscillators = [];
+
+        document.addEventListener('click', function toggleSound() {
+            const hint = document.getElementById('sound-hint');
+
+            if (!soundStarted) {
+                // Start sound
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const frequencies = [110, 165, 220, 277];
+
+                frequencies.forEach((freq, index) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.08 + (Math.random() * 0.04), audioContext.currentTime);
+
+                    const lfo = audioContext.createOscillator();
+                    const lfoGain = audioContext.createGain();
+                    lfo.frequency.value = 0.3 + (index * 0.1);
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(gain.gain);
+                    lfoGain.gain.value = 0.02;
+
+                    osc.start(audioContext.currentTime);
+                    lfo.start(audioContext.currentTime);
+
+                    oscillators.push({ osc, lfo, gain });
+                });
+
+                soundStarted = true;
+                if (hint) {
+                    hint.textContent = 'click para desactivar el sonido';
+                }
+            } else {
+                // Stop sound
+                oscillators.forEach(({ osc, lfo }) => {
+                    osc.stop(audioContext.currentTime);
+                    lfo.stop(audioContext.currentTime);
+                });
+                oscillators = [];
+                audioContext.close();
+                audioContext = null;
+
+                soundStarted = false;
+                if (hint) {
+                    hint.textContent = 'haz click para activar el sonido';
+                }
+            }
         });
 
         const form = document.getElementById('subscriptionForm');
