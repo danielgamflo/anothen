@@ -486,9 +486,10 @@
             }
 
             .subscription-form button {
-                font-size: 14px;
+                font-size: 12px;
                 padding: 0.75rem 1rem;
                 border-radius: 0 0 4px 4px;
+                letter-spacing: 0.08em;
             }
         }
     </style>
@@ -530,7 +531,7 @@
             </div>
 
             <p class="subscription-hint">
-                Síguelo de cerca. Sé el primero en saber cuándo llegamos.
+                Síguelo de cerca.<br>Sé el primero en saber cuándo llegamos.
             </p>
         </div>
     </div>
@@ -684,8 +685,8 @@
                     audioContext.resume().catch(e => console.log('Audio resume failed:', e));
                 }
 
-                // Epic, ethereal frequencies like Enya
-                const frequencies = [82, 110, 165, 220, 277, 330]; // Richer harmony
+                // Epic, ethereal frequencies like Enya (no heavy bass)
+                const frequencies = [110, 165, 220, 277, 330, 440]; // Mid to high frequencies
                 const isMobile = window.innerWidth <= 768;
                 const baseVolume = isMobile ? 0.1 : 0.06; // Subtle but present
 
