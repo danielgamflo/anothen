@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anothen — Próximamente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Georgia', 'Garamond', serif;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: crosshair;
+            --reveal-x: 0px;
+            --reveal-y: 0px;
+            --reveal-radius: 120px;
+            --fade-radius: 60px;
+        }
+
+        /* Background with subtle overlay - BLURRED version by default */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.2) 100%);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -2;
+            animation: subtleZoom 20s ease-in-out infinite;
+        }
+
+        /* Sharp/focused image overlay - only visible in mouse circle */
+        #blurred-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.2) 100%);
+            background-size: 105% 105%;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -1;
+            pointer-events: none;
+            animation: subtleZoom 20s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body::before {
+                animation: none;
+            }
+        }
+
+        @keyframes subtleZoom {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        /* Main container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Logo area */
+        .logo-area {
+            position: fixed;
+            top: 15%;
+            left: 0;
+            right: 0;
+            width: fit-content;
+            margin: 0 auto;
+            text-align: center;
+            z-index: 10;
+            color: #403e2c;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-area:hover {
+            transform: scale(1.05) rotateZ(2deg);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+            font-weight: 300;
+        }
+
+        .logo-text {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            letter-spacing: 0.15em;
+            font-weight: 400;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            font-weight: 300;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        /* Content wrapper */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            max-width: 900px;
+            margin-top: -1rem;
+        }
+
+        /* Title */
+        h1 {
+            font-family: 'Italiana', serif;
+            font-size: clamp(3rem, 10vw, 7.2rem);
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-align: center;
+            line-height: 1.2;
+            max-width: 85vw;
+            text-transform: uppercase;
+            color: #4d473d;
+            animation: fadeInUp 0.8s ease-out 0.4s both, glow 3s ease-in-out 1.2s infinite;
+        }
+
+        /* Separator line */
+        .separator {
+            width: 1px;
+            height: 3rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            margin: 0.5rem 0;
+            animation: growLine 0.8s ease-out 0.6s both;
+        }
+
+        /* Description text */
+        .description {
+            font-size: clamp(13px, 2vw, 16px);
+            line-height: 1.8;
+            text-align: center;
+            max-width: min(60vw, 500px);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.7s both;
+            color: #f2e6da;
+        }
+
+        /* Subscription form */
+        .subscription-form {
+            display: flex;
+            gap: 0;
+            align-items: stretch;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 100%;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .subscription-form input {
+            padding: 1rem 1.5rem;
+            border: none;
+            font-family: 'Georgia', 'Garamond', serif;
+            font-size: 14px;
+            background-color: #f1e4d9;
+            color: #423c33;
+            min-width: 250px;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .subscription-form input::placeholder {
+            color: #a5a5a5;
+            font-style: normal;
+        }
+
+        .subscription-form input:focus {
+            outline: none;
+            background-color: #ffffff;
+            box-shadow: inset 0 0 0 2px #403e2c, 0 4px 20px rgba(64, 62, 44, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .subscription-form button {
+            padding: 1rem 2.5rem;
+            border: none;
+            background-color: #403e2c;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        .subscription-form button:hover {
+            background-color: #5b553e;
+            transform: translateY(-2px);
+        }
+
+        .subscription-form button:active {
+            transform: translateY(0);
+        }
+
+        /* Success message */
+        .success-message {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes growLine {
+            from {
+                height: 0;
+                opacity: 0;
+            }
+            to {
+                height: 3rem;
+                opacity: 1;
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(219, 212, 202, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(219, 212, 202, 0.6);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .logo-area {
+                top: 2.5rem;
+            }
+
+            .logo-text {
+                font-size: 1.4rem;
+            }
+
+            .logo-subtitle {
+                font-size: 0.8rem;
+            }
+
+            .content-wrapper {
+                gap: 1.2rem;
+                margin-top: 1.5rem;
+            }
+
+            h1 {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+            }
+
+            .separator {
+                height: 2rem;
+            }
+
+            .description {
+                font-size: 14px;
+                max-width: 85vw;
+                line-height: 1.7;
+            }
+
+            .subscription-form {
+                gap: 0;
+                flex-direction: column;
+                width: 90%;
+                max-width: 100%;
+            }
+
+            .subscription-form input {
+                width: 100%;
+                min-width: 100%;
+                border-radius: 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .subscription-form button {
+                width: 100%;
+                border-radius: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .logo-area {
+                top: 1.5rem;
+            }
+
+            .logo-text {
+                font-size: 1.1rem;
+                letter-spacing: 0.1em;
+            }
+
+            .logo-subtitle {
+                font-size: 0.75rem;
+            }
+
+            .content-wrapper {
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+
+            h1 {
+                font-size: clamp(1.5rem, 7vw, 2.5rem);
+                letter-spacing: 0.08em;
+            }
+
+            .separator {
+                height: 1.5rem;
+            }
+
+            .description {
+                font-size: 13px;
+                max-width: 95vw;
+                line-height: 1.6;
+            }
+
+            .subscription-form input,
+            .subscription-form button {
+                font-size: 12px;
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="blurred-overlay"></div>
+    <div class="container">
+        <div class="logo-area">
+            <div class="logo-icon">⛰</div>
+            <div class="logo-text">Anothen</div>
+            <div class="logo-subtitle">Nacidos de lo alto.</div>
+        </div>
+
+        <div class="content-wrapper">
+            <h1>Próximamente</h1>
+
+            <div class="separator"></div>
+
+            <p class="description">
+                Estamos preparando algo con propósito,<br>
+                para acompañarte cada día.
+            </p>
+
+            <form class="subscription-form" id="subscriptionForm">
+                <input
+                    type="email"
+                    placeholder="Tu correo electrónico"
+                    required
+                    aria-label="Correo electrónico"
+                >
+                <button type="submit">Suscribirme</button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                ✓ Gracias. Te notificaremos pronto.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load background images dynamically
+        window.addEventListener('DOMContentLoaded', function() {
+            // Load blurred image for overlay (revela blur en spotlight)
+            const blurImg = new Image();
+            blurImg.onload = function() {
+                const overlay = document.getElementById('blurred-overlay');
+                overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg')";
+                overlay.style.backgroundSize = "cover";
+                overlay.style.backgroundPosition = "center";
+                document.body.classList.add('image-loaded');
+            };
+            blurImg.onerror = function() {
+                console.log('Blurred image not found');
+            };
+            blurImg.src = './Images/Slide-web-02-blur.jpg';
+
+            // Load sharp image for body::before (fondo enfocado)
+            const sharpImg = new Image();
+            sharpImg.onload = function() {
+                const style = document.createElement('style');
+                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg') !important; }`;
+                document.head.appendChild(style);
+            };
+            sharpImg.onerror = function() {
+                console.log('Sharp background image not found');
+            };
+            sharpImg.src = './Images/Slide-web-01.jpg';
+        });
+
+        // Reveal circle effect - reveals sharp image through blurred background
+        const blurredOverlay = document.getElementById('blurred-overlay');
+        const isDesktop = window.innerWidth > 768;
+        const radius = isDesktop ? 250 : 150; // Radius of the reveal circle in px (larger on desktop)
+        const fadeRadius = isDesktop ? 100 : 70; // Fade/gradient radius in px
+
+        document.addEventListener('mousemove', function(e) {
+            const x = e.clientX;
+            const y = e.clientY;
+
+            const maskGradient = `radial-gradient(circle at ${x}px ${y}px, transparent 0%, transparent ${radius - fadeRadius}px, black ${radius}px)`;
+            blurredOverlay.style.webkitMaskImage = maskGradient;
+            blurredOverlay.style.maskImage = maskGradient;
+        });
+
+        // Reset on mouse leave - show full blur
+        document.addEventListener('mouseleave', function() {
+            blurredOverlay.style.webkitMaskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
+            blurredOverlay.style.maskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
+        });
+
+        const form = document.getElementById('subscriptionForm');
+        const successMessage = document.getElementById('successMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = form.querySelector('input[type="email"]').value;
+
+            // Here you would typically send the email to your backend
+            console.log('Email subscribed:', email);
+
+            // Show success message
+            form.style.display = 'none';
+            successMessage.classList.add('show');
+
+            // Optional: Reset form after 3 seconds
+            setTimeout(() => {
+                form.reset();
+                form.style.display = 'flex';
+                successMessage.classList.remove('show');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
