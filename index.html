@@ -394,7 +394,7 @@
             }
 
             h1 {
-                font-size: clamp(2rem, 8vw, 3.5rem);
+                font-size: clamp(2.5rem, 9vw, 4.5rem);
             }
 
             .separator {
@@ -417,13 +417,13 @@
             .subscription-form input {
                 width: 100%;
                 min-width: 100%;
-                border-radius: 0;
+                border-radius: 4px 4px 0 0;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
 
             .subscription-form button {
                 width: 100%;
-                border-radius: 0;
+                border-radius: 0 0 4px 4px;
             }
         }
 
@@ -451,7 +451,7 @@
             }
 
             h1 {
-                font-size: clamp(1.5rem, 7vw, 2.5rem);
+                font-size: clamp(2rem, 8vw, 3.5rem);
                 letter-spacing: 0.08em;
             }
 
@@ -465,10 +465,16 @@
                 line-height: 1.6;
             }
 
-            .subscription-form input,
+            .subscription-form input {
+                font-size: 12px;
+                padding: 0.75rem 1rem;
+                border-radius: 4px 4px 0 0;
+            }
+
             .subscription-form button {
                 font-size: 12px;
                 padding: 0.75rem 1rem;
+                border-radius: 0 0 4px 4px;
             }
         }
     </style>
@@ -588,7 +594,7 @@
                 particle.className = 'particle';
 
                 const startX = Math.random() * window.innerWidth;
-                const duration = 8 + Math.random() * 12; // 8-20 seconds
+                const duration = 15 + Math.random() * 15; // 15-30 seconds
                 const delay = Math.random() * 5;
 
                 particle.style.left = startX + 'px';
@@ -662,7 +668,7 @@
 
                 const frequencies = [110, 165, 220, 277];
                 const isMobile = window.innerWidth <= 768;
-                const baseVolume = isMobile ? 0.15 : 0.08; // Higher volume on mobile
+                const baseVolume = isMobile ? 0.3 : 0.08; // Much higher volume on mobile
 
                 frequencies.forEach((freq, index) => {
                     const osc = audioContext.createOscillator();
@@ -673,14 +679,14 @@
 
                     osc.type = 'sine';
                     osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(baseVolume + (Math.random() * 0.04), audioContext.currentTime);
+                    gain.gain.setValueAtTime(baseVolume + (Math.random() * 0.06), audioContext.currentTime);
 
                     const lfo = audioContext.createOscillator();
                     const lfoGain = audioContext.createGain();
                     lfo.frequency.value = 0.3 + (index * 0.1);
                     lfo.connect(lfoGain);
                     lfoGain.connect(gain.gain);
-                    lfoGain.gain.value = isMobile ? 0.04 : 0.02; // More noticeable on mobile
+                    lfoGain.gain.value = isMobile ? 0.08 : 0.02; // Much more noticeable on mobile
 
                     osc.start(audioContext.currentTime);
                     lfo.start(audioContext.currentTime);
