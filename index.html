@@ -684,9 +684,10 @@
                     audioContext.resume().catch(e => console.log('Audio resume failed:', e));
                 }
 
-                const frequencies = [110, 165, 220, 277];
+                // Epic, ethereal frequencies like Enya
+                const frequencies = [82, 110, 165, 220, 277, 330]; // Richer harmony
                 const isMobile = window.innerWidth <= 768;
-                const baseVolume = isMobile ? 0.12 : 0.08; // Balanced volume on mobile
+                const baseVolume = isMobile ? 0.1 : 0.06; // Subtle but present
 
                 frequencies.forEach((freq, index) => {
                     const osc = audioContext.createOscillator();
@@ -697,14 +698,16 @@
 
                     osc.type = 'sine';
                     osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(baseVolume + (Math.random() * 0.04), audioContext.currentTime);
+                    gain.gain.setValueAtTime((baseVolume / (index + 1)) * 0.8, audioContext.currentTime); // Layered, decreasing volume
 
+                    // Slow, smooth LFO for ethereal effect
                     const lfo = audioContext.createOscillator();
                     const lfoGain = audioContext.createGain();
-                    lfo.frequency.value = 0.3 + (index * 0.1);
+                    lfo.type = 'sine';
+                    lfo.frequency.value = 0.15 + (index * 0.08); // Very slow modulation
                     lfo.connect(lfoGain);
                     lfoGain.connect(gain.gain);
-                    lfoGain.gain.value = isMobile ? 0.04 : 0.02; // Subtle modulation
+                    lfoGain.gain.value = 0.02; // Subtle, smooth breathing
 
                     osc.start(audioContext.currentTime);
                     lfo.start(audioContext.currentTime);
