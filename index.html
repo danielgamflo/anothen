@@ -686,7 +686,7 @@
 
                 const frequencies = [110, 165, 220, 277];
                 const isMobile = window.innerWidth <= 768;
-                const baseVolume = isMobile ? 0.3 : 0.08; // Much higher volume on mobile
+                const baseVolume = isMobile ? 0.12 : 0.08; // Balanced volume on mobile
 
                 frequencies.forEach((freq, index) => {
                     const osc = audioContext.createOscillator();
@@ -697,14 +697,14 @@
 
                     osc.type = 'sine';
                     osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(baseVolume + (Math.random() * 0.06), audioContext.currentTime);
+                    gain.gain.setValueAtTime(baseVolume + (Math.random() * 0.04), audioContext.currentTime);
 
                     const lfo = audioContext.createOscillator();
                     const lfoGain = audioContext.createGain();
                     lfo.frequency.value = 0.3 + (index * 0.1);
                     lfo.connect(lfoGain);
                     lfoGain.connect(gain.gain);
-                    lfoGain.gain.value = isMobile ? 0.08 : 0.02; // Much more noticeable on mobile
+                    lfoGain.gain.value = isMobile ? 0.04 : 0.02; // Subtle modulation
 
                     osc.start(audioContext.currentTime);
                     lfo.start(audioContext.currentTime);
