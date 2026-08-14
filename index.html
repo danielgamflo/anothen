@@ -46,6 +46,12 @@
             background-attachment: fixed;
             z-index: -2;
             animation: subtleZoom 20s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease-in 0.3s;
+        }
+
+        body.image-loaded::before {
+            opacity: 1;
         }
 
         /* Sharp/focused image overlay - only visible in mouse circle */
