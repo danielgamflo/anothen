@@ -266,8 +266,11 @@
         .separator {
             width: 2px;
             height: 3rem;
-            background-color: rgba(255, 255, 255, 0.5);
-            margin: 0.5rem 0;
+            background-color: #4b4d37;
+            margin: 0;
+            position: relative;
+            z-index: 10;
+            margin-top: 2rem;
             animation: growLine 0.8s ease-out 1.6s both;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -614,10 +617,10 @@
             Estamos preparando algo con propósito, para acompañarte cada día.
         </p>
 
+        <div class="separator"></div>
+
         <div class="content-wrapper">
             <h1>Próximamente</h1>
-
-            <div class="separator"></div>
 
             <form class="subscription-form" id="subscriptionForm">
                 <input
