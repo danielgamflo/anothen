@@ -107,6 +107,18 @@
             }
         }
 
+        /* Slide up with zoom out - slide 03 (mobile) */
+        @keyframes slideUpZoomOutMobile {
+            0% {
+                transform: translateY(100vh) scale(1.10);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
         /* Slide up with zoom out - slide 04 (50vh) */
         @keyframes slideUpZoomOut04 {
             0% {
@@ -566,6 +578,10 @@
                 font-size: 14px;
                 max-width: 85vw;
                 line-height: 1.7;
+            }
+
+            .parallax-layer-03 {
+                animation: slideUpZoomOutMobile 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             }
 
             .subscription-form {
