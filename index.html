@@ -469,10 +469,10 @@
 
         @keyframes flyBird {
             0% {
-                left: -50px;
+                left: -100px;
             }
             100% {
-                left: 100vw;
+                left: calc(100vw + 100px);
             }
         }
 
@@ -768,8 +768,8 @@
                 bird.className = 'bird';
 
                 const startY = Math.random() * (window.innerHeight * 0.4) + window.innerHeight * 0.05; // 5% to 45%
-                const duration = 8 + Math.random() * 6; // 8-14 seconds
-                const delay = Math.random() * 10;
+                const duration = 18 + Math.random() * 12; // 18-30 seconds
+                const delay = Math.random() * 15;
 
                 bird.style.top = startY + 'px';
                 bird.style.animation = `flyBird ${duration}s linear ${delay}s infinite`;
