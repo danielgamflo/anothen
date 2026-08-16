@@ -119,6 +119,18 @@
             }
         }
 
+        /* Slide up with zoom out - slide 05 (25vh) */
+        @keyframes slideUpZoomOut05 {
+            0% {
+                transform: translateY(25vh) scale(1.60);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
         /* Parallax background layer */
         .parallax-bg {
             position: fixed;
@@ -154,6 +166,12 @@
             background-image: url('./Images/parallax/slide-04.png');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 4;
+        }
+
+        .parallax-layer-05 {
+            background-image: url('./Images/parallax/slide-05.png');
+            animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            z-index: 5;
         }
 
         /* Main container */
@@ -573,6 +591,7 @@
     <div class="parallax-bg parallax-layer-02"></div>
     <div class="parallax-bg parallax-layer-03"></div>
     <div class="parallax-bg parallax-layer-04"></div>
+    <div class="parallax-bg parallax-layer-05"></div>
 
     <div id="particles-container"></div>
     <div id="sound-hint" style="position: fixed; bottom: 2rem; left: 0; right: 0; width: fit-content; margin: 0 auto; font-family: 'Georgia', serif; font-size: 12px; color: rgba(242, 230, 218, 0.6); letter-spacing: 0.05em; text-align: center; z-index: 5; opacity: 0; animation: fadeInUp 0.8s ease-out 2.5s both; cursor: pointer;">
