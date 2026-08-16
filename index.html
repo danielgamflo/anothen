@@ -478,10 +478,16 @@
 
         @keyframes flapWings {
             0%, 100% {
-                transform: scaleY(1);
+                transform: translateY(0px);
+            }
+            25% {
+                transform: translateY(-8px);
             }
             50% {
-                transform: scaleY(0.85);
+                transform: translateY(0px);
+            }
+            75% {
+                transform: translateY(-8px);
             }
         }
 
