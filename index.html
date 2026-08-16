@@ -467,6 +467,34 @@
             box-shadow: 0 0 6px rgba(242, 230, 218, 0.8), 0 0 12px rgba(242, 230, 218, 0.5);
         }
 
+        @keyframes flyBird {
+            0% {
+                left: -50px;
+            }
+            100% {
+                left: 100vw;
+            }
+        }
+
+        .bird {
+            position: fixed;
+            pointer-events: none;
+            z-index: 7;
+            width: 40px;
+            height: 20px;
+        }
+
+        .bird::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><path d="M20 25 Q35 10 50 25 Q65 10 80 25" stroke="black" fill="none" stroke-width="2" stroke-linecap="round"/><circle cx="50" cy="25" r="3" fill="black"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
         /* Subscription hint */
         .subscription-hint {
             font-size: 12px;
@@ -730,6 +758,33 @@
         }
 
         createParticles();
+
+        // Create flying birds
+        function createBirds() {
+            const container = document.getElementById('particles-container');
+
+            function createBird() {
+                const bird = document.createElement('div');
+                bird.className = 'bird';
+
+                const startY = Math.random() * (window.innerHeight * 0.6) + window.innerHeight * 0.1;
+                const duration = 8 + Math.random() * 6; // 8-14 seconds
+                const delay = Math.random() * 10;
+
+                bird.style.top = startY + 'px';
+                bird.style.animation = `flyBird ${duration}s linear ${delay}s infinite`;
+
+                container.appendChild(bird);
+            }
+
+            // Create 3-5 birds
+            const birdCount = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < birdCount; i++) {
+                createBird();
+            }
+        }
+
+        createBirds();
 
         // Create ambient enchanted background music
         function createAmbientBackgroundMusic() {
