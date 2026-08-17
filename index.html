@@ -1167,17 +1167,17 @@
                     if (neighborCount > 0) {
                         alignmentVel.divideScalar(neighborCount);
                         alignmentVel.normalize();
-                        alignmentVel.multiplyScalar(0.02);
+                        alignmentVel.multiplyScalar(0.008);
                         bird.velocity.add(alignmentVel);
 
                         cohesion.divideScalar(neighborCount);
                         cohesion.sub(bird.position);
                         cohesion.normalize();
-                        cohesion.multiplyScalar(0.01);
+                        cohesion.multiplyScalar(0.004);
                         bird.velocity.add(cohesion);
                     }
 
-                    separation.multiplyScalar(0.1);
+                    separation.multiplyScalar(0.03);
                     bird.velocity.add(separation);
 
                     // Mouse avoidance
@@ -1188,18 +1188,21 @@
                             this.mousePos
                         );
                         fleeVector.normalize();
-                        fleeVector.multiplyScalar(0.15);
+                        fleeVector.multiplyScalar(0.05);
                         bird.velocity.add(fleeVector);
                     }
 
                     // Speed limit
                     const speed = bird.velocity.length();
-                    if (speed > 3) {
-                        bird.velocity.normalize().multiplyScalar(3);
+                    if (speed > 1.2) {
+                        bird.velocity.normalize().multiplyScalar(1.2);
                     }
-                    if (speed < 0.5) {
-                        bird.velocity.normalize().multiplyScalar(0.5);
+                    if (speed < 0.15) {
+                        bird.velocity.normalize().multiplyScalar(0.15);
                     }
+
+                    // Reduce Z movement for horizontal flight
+                    bird.velocity.z *= 0.5;
 
                     // Boundary conditions with wrap-around
                     const width = window.innerWidth;
@@ -1271,12 +1274,12 @@
                 this.position = new THREE.Vector3(
                     (Math.random() - 0.5) * window.innerWidth,
                     (Math.random() - 0.5) * window.innerHeight * 0.8,
-                    (Math.random() - 0.5) * 100
+                    (Math.random() - 0.5) * 10
                 );
                 this.velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 2,
-                    (Math.random() - 0.5) * 2,
-                    (Math.random() - 0.5) * 0.5
+                    (Math.random() - 0.5) * 0.8,
+                    (Math.random() - 0.5) * 0.8,
+                    (Math.random() - 0.5) * 0.05
                 );
 
                 this.createMesh();
