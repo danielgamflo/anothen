@@ -981,8 +981,8 @@
                     hint.classList.add('active');
                 }
             } else {
-                // Stop sound with very smooth fade out
-                const fadeOutDuration = 3.5; // 3.5 seconds for ultra smooth fade out
+                // Stop sound immediately
+                const fadeOutDuration = 0; // Instant stop
                 const stopTime = audioContext.currentTime + fadeOutDuration;
 
                 oscillators.forEach(({ osc, lfo, gain }) => {
