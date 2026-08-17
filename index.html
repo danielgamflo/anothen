@@ -157,32 +157,32 @@
         }
 
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.png?v=20260816');
+            background-image: url('./Images/parallax/slide-01.png?v=20260817');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 1;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.png?v=20260816');
+            background-image: url('./Images/parallax/slide-02.png?v=20260817');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 2;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.png?v=20260816');
+            background-image: url('./Images/parallax/slide-03.png?v=20260817');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 3;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.png?v=20260816');
+            background-image: url('./Images/parallax/slide-04.png?v=20260817');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 4;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.png?v=20260816');
+            background-image: url('./Images/parallax/slide-05.png?v=20260817');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 5;
         }
@@ -640,7 +640,7 @@
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/parallax/slide-03-movil.png?v=20260816');
+                background-image: url('./Images/parallax/slide-03-movil.png?v=20260817');
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -786,7 +786,7 @@
             const blurImg = new Image();
             blurImg.onload = function() {
                 const overlay = document.getElementById('blurred-overlay');
-                overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260816')";
+                overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817')";
                 overlay.style.backgroundSize = "cover";
                 overlay.style.backgroundPosition = "center";
                 document.body.classList.add('image-loaded');
@@ -794,19 +794,19 @@
             blurImg.onerror = function() {
                 console.log('Blurred image not found');
             };
-            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260816';
+            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817';
 
             // Load sharp image for body::before (fondo enfocado)
             const sharpImg = new Image();
             sharpImg.onload = function() {
                 const style = document.createElement('style');
-                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260816') !important; }`;
+                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817') !important; }`;
                 document.head.appendChild(style);
             };
             sharpImg.onerror = function() {
                 console.log('Sharp background image not found');
             };
-            sharpImg.src = './Images/Slide-web-01.jpg?v=20260816';
+            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817';
         });
 
         // Reveal circle effect - reveals sharp image through blurred background
