@@ -809,43 +809,6 @@
             sharpImg.src = './Images/Slide-web-01.jpg?v=20260817';
         });
 
-        // Reveal circle effect - reveals sharp image through blurred background
-        const blurredOverlay = document.getElementById('blurred-overlay');
-        const isDesktop = window.innerWidth > 768;
-        const radius = isDesktop ? 250 : 150; // Radius of the reveal circle in px (larger on desktop)
-        const fadeRadius = isDesktop ? 100 : 70; // Fade/gradient radius in px
-
-        function updateRevealCircle(x, y) {
-            const maskGradient = `radial-gradient(circle at ${x}px ${y}px, transparent 0%, transparent ${radius - fadeRadius}px, black ${radius}px)`;
-            blurredOverlay.style.webkitMaskImage = maskGradient;
-            blurredOverlay.style.maskImage = maskGradient;
-        }
-
-        // Desktop mouse move
-        document.addEventListener('mousemove', function(e) {
-            updateRevealCircle(e.clientX, e.clientY);
-        });
-
-        // Mobile touch move
-        document.addEventListener('touchmove', function(e) {
-            if (e.touches.length > 0) {
-                const touch = e.touches[0];
-                updateRevealCircle(touch.clientX, touch.clientY);
-            }
-        }, { passive: true });
-
-        // Reset on mouse leave
-        document.addEventListener('mouseleave', function() {
-            blurredOverlay.style.webkitMaskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
-            blurredOverlay.style.maskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
-        });
-
-        // Reset on touch end
-        document.addEventListener('touchend', function() {
-            blurredOverlay.style.webkitMaskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
-            blurredOverlay.style.maskImage = 'radial-gradient(circle at 0px 0px, black 0%)';
-        });
-
         // Create floating particles
         function createParticles() {
             const container = document.getElementById('particles-container');
