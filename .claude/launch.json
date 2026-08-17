@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Anothen Dev Server",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8000", "--directory", "/Users/danielgamboaflores/Desktop/PROYECTOS/Freelace/Anothen"],
+      "port": 8000,
+      "url": "http://localhost:8000"
+    }
+  ]
+}
