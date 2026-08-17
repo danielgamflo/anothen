@@ -192,20 +192,39 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             padding: 2rem;
             position: relative;
             z-index: 10;
+            box-sizing: border-box;
+        }
+
+        /* Content sections */
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 0.5rem;
+        }
+
+        .content-section.top {
+            flex: 0 0 auto;
+        }
+
+        .content-section.middle {
+            flex: 1 1 auto;
+        }
+
+        .content-section.bottom {
+            flex: 0 0 auto;
         }
 
         /* Logo area */
         .logo-area {
-            position: fixed;
-            top: 2%;
-            left: 0;
-            right: 0;
+            position: relative;
             width: fit-content;
             margin: 0 auto;
             text-align: center;
@@ -243,14 +262,13 @@
             margin-top: 0.8rem;
         }
 
-        /* Content wrapper */
+        /* Content wrapper - deprecated, use content-section instead */
         .content-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
             max-width: 900px;
-            margin-top: 24rem;
             position: relative;
             z-index: 10;
         }
@@ -611,10 +629,7 @@
         @media (max-width: 480px) {
             .container {
                 padding: 1.5rem;
-            }
-
-            .logo-area {
-                top: 1.5rem;
+                min-height: 100vh;
             }
 
             .logo-text {
@@ -626,9 +641,12 @@
                 font-size: 0.75rem;
             }
 
+            .content-section.bottom {
+                gap: 1rem;
+            }
+
             .content-wrapper {
                 gap: 1rem;
-                margin-top: 1rem;
             }
 
             h1 {
@@ -674,18 +692,25 @@
         haz click para activar el sonido
     </div>
     <div class="container">
-        <div class="logo-area" id="logo">
-            <img src="./Images/Logo-Anothen.png" alt="Anothen Logo" class="logo" style="max-width: 200px; height: auto; display: block; margin: 0 auto 0;">
-            <div class="logo-subtitle">Nacidos de lo alto.</div>
+        <!-- TOP SECTION: Logo, Separator, Description -->
+        <div class="content-section top">
+            <div class="logo-area" id="logo">
+                <img src="./Images/Logo-Anothen.png" alt="Anothen Logo" class="logo" style="max-width: 200px; height: auto; display: block; margin: 0 auto 0;">
+                <div class="logo-subtitle">Nacidos de lo alto.</div>
+            </div>
+
+            <div class="separator"></div>
+
+            <p class="description">
+                Estamos preparando algo con propósito, para acompañarte cada día.
+            </p>
         </div>
 
-        <div class="separator"></div>
+        <!-- MIDDLE SECTION: Spacer (grows to fill viewport) -->
+        <div class="content-section middle"></div>
 
-        <p class="description">
-            Estamos preparando algo con propósito, para acompañarte cada día.
-        </p>
-
-        <div class="content-wrapper">
+        <!-- BOTTOM SECTION: Form, Success, Hint -->
+        <div class="content-section bottom">
             <form class="subscription-form" id="subscriptionForm">
                 <input
                     type="email"
