@@ -943,8 +943,8 @@
         let audioContext = null;
         let oscillators = [];
 
-        document.addEventListener('click', function toggleSound() {
-            const hint = document.getElementById('sound-hint');
+        const hint = document.getElementById('sound-hint');
+        hint.addEventListener('click', function toggleSound() {
 
             if (!soundStarted) {
                 // Start sound
