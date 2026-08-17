@@ -792,9 +792,11 @@
             const blurImg = new Image();
             blurImg.onload = function() {
                 const overlay = document.getElementById('blurred-overlay');
-                overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260819')";
-                overlay.style.backgroundSize = "cover";
-                overlay.style.backgroundPosition = "center";
+                if (overlay) {
+                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260819')";
+                    overlay.style.backgroundSize = "cover";
+                    overlay.style.backgroundPosition = "center";
+                }
                 document.body.classList.add('image-loaded');
             };
             blurImg.onerror = function() {
@@ -1055,20 +1057,20 @@
                 super();
                 // Simple low-poly bird: body (triangle) + left wing (triangle) + right wing (triangle)
                 const vertices = [
-                    // Body (centered, pointing forward in +Z)
-                    0, 8, 0,      // nose
-                    -6, -4, 0,    // left back
-                    6, -4, 0,     // right back
+                    // Body (centered, pointing forward in +Z) - SCALED UP 3x
+                    0, 24, 0,     // nose
+                    -18, -12, 0,  // left back
+                    18, -12, 0,   // right back
 
                     // Left wing
-                    -8, 2, 0,     // wing root
-                    -18, 6, 0,    // wing tip
-                    -8, -2, 0,    // wing bottom
+                    -24, 6, 0,    // wing root
+                    -54, 18, 0,   // wing tip
+                    -24, -6, 0,   // wing bottom
 
                     // Right wing
-                    8, 2, 0,      // wing root
-                    18, 6, 0,     // wing tip
-                    8, -2, 0      // wing bottom
+                    24, 6, 0,     // wing root
+                    54, 18, 0,    // wing tip
+                    24, -6, 0     // wing bottom
                 ];
 
                 const indices = [
@@ -1174,10 +1176,12 @@
             createBirdsInstanced() {
                 const geometry = new BirdGeometry();
                 const material = new THREE.MeshPhongMaterial({
-                    color: 0x5a5a5a,
-                    shininess: 25,
+                    color: 0x1a1a1a,
+                    emissive: 0x2a2a2a,
+                    shininess: 60,
                     side: THREE.DoubleSide,
-                    flatShading: false
+                    flatShading: true,
+                    wireframe: false
                 });
 
                 this.birdMesh = new THREE.InstancedMesh(geometry, material, this.birdCount);
@@ -1196,6 +1200,7 @@
                         (Math.random() - 0.5) * height * 0.8,
                         (Math.random() - 0.5) * 20
                     );
+                    if (i === 0) console.log('First bird pos:', pos, 'width:', width, 'height:', height);
                     this.positions.push(pos);
 
                     const vel = new THREE.Vector3(
@@ -1369,13 +1374,16 @@
         // Initialize birds scene when DOM is ready
         let birdsScene = null;
         window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded fired, initializing BirdsScene...');
             setTimeout(() => {
                 try {
+                    console.log('Creating BirdsScene...');
                     birdsScene = new BirdsScene();
+                    console.log('BirdsScene created successfully');
                 } catch (error) {
                     console.error('Failed to initialize BirdsScene:', error);
                 }
-            }, 100);
+            }, 500);
         });
 
         // Cleanup on page unload
