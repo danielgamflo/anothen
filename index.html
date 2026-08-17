@@ -1043,15 +1043,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.min.js" crossorigin="anonymous"></script>
 
     <script>
-        // ===== 3D BIRDS SYSTEM =====
-        // Check if Three.js is available
+        // ===== 3D BIRDS SYSTEM (WebGL + InstancedMesh) =====
+        // Enhanced bird flocking system with improved boids algorithm and instanced rendering
+
         if (typeof THREE === 'undefined') {
             console.warn('Three.js library failed to load. Birds will not be rendered.');
         }
 
+        class BirdGeometry extends THREE.BufferGeometry {
+            constructor() {
+                super();
+                // Simple low-poly bird: body (triangle) + left wing (triangle) + right wing (triangle)
+                const vertices = [
+                    // Body (centered, pointing forward in +Z)
+                    0, 8, 0,      // nose
+                    -6, -4, 0,    // left back
+                    6, -4, 0,     // right back
+
+                    // Left wing
+                    -8, 2, 0,     // wing root
+                    -18, 6, 0,    // wing tip
+                    -8, -2, 0,    // wing bottom
+
+                    // Right wing
+                    8, 2, 0,      // wing root
+                    18, 6, 0,     // wing tip
+                    8, -2, 0      // wing bottom
+                ];
+
+                const indices = [
+                    // Body
+                    0, 1, 2,
+                    // Left wing
+                    3, 4, 5,
+                    // Right wing
+                    6, 7, 8
+                ];
+
+                this.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+                this.setIndex(new THREE.BufferAttribute(new Uint16Array(indices), 1));
+                this.computeVertexNormals();
+            }
+        }
+
         class BirdsScene {
             constructor() {
-                // Check if Three.js is available
                 if (typeof THREE === 'undefined') {
                     console.error('Three.js not loaded. Cannot initialize birds.');
                     return;
@@ -1063,32 +1099,49 @@
                     return;
                 }
 
-                this.birds = [];
-                this.birdMeshes = [];
-                this.mousePos = { x: 0, y: 0, z: 0 };
                 this.isMobile = window.innerWidth <= 768;
                 this.birdCount = this.isMobile ? 15 : 30;
 
+                // Bird state arrays
+                this.positions = [];
+                this.velocities = [];
+                this.times = [];
+                this.mousePos = { x: 0, y: 0, z: 0 };
+
+                // Boids parameters (tuned for better flocking)
+                this.params = {
+                    separationRadius: 80,
+                    alignmentRadius: 120,
+                    cohesionRadius: 150,
+                    separationWeight: 0.15,    // Increased from 0.03
+                    alignmentWeight: 0.20,      // Increased from 0.008
+                    cohesionWeight: 0.10,       // Increased from 0.004
+                    mouseRepelRadius: 200,
+                    mouseRepelWeight: 0.08,     // Increased from 0.05
+                    maxSpeed: 2.0,              // Increased from 1.2
+                    minSpeed: 0.3,              // Increased from 0.15
+                    boundaryMargin: 100
+                };
+
                 try {
                     this.init3DScene();
-                    this.createBirds();
+                    this.createBirdsInstanced();
                     this.animate();
                     this.setupEventListeners();
-                    console.log(`3D Birds scene initialized: ${this.birdCount} birds on ${this.isMobile ? 'mobile' : 'desktop'}`);
+                    console.log(`3D Birds scene initialized: ${this.birdCount} birds (InstancedMesh) on ${this.isMobile ? 'mobile' : 'desktop'}`);
                 } catch (error) {
                     console.error('Error initializing birds scene:', error);
                 }
             }
 
             init3DScene() {
-                // Scene setup
                 this.scene = new THREE.Scene();
                 this.scene.background = null;
                 this.scene.fog = null;
 
-                // Camera - orthographic to match 2D layout
                 const width = window.innerWidth;
                 const height = window.innerHeight;
+
                 this.camera = new THREE.OrthographicCamera(
                     width / -2, width / 2,
                     height / 2, height / -2,
@@ -1096,141 +1149,188 @@
                 );
                 this.camera.position.z = 500;
 
-                // Renderer
                 this.renderer = new THREE.WebGLRenderer({
                     canvas: this.canvas,
                     alpha: true,
                     antialias: true,
-                    preserveDrawingBuffer: false
+                    preserveDrawingBuffer: false,
+                    precision: 'highp'
                 });
                 this.renderer.setSize(width, height);
                 this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
                 this.renderer.setClearColor(0x000000, 0);
 
                 // Lighting
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
                 this.scene.add(ambientLight);
 
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
                 directionalLight.position.set(100, 100, 100);
                 this.scene.add(directionalLight);
 
                 window.addEventListener('resize', () => this.onWindowResize());
             }
 
-            createBirds() {
+            createBirdsInstanced() {
+                const geometry = new BirdGeometry();
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0x5a5a5a,
+                    shininess: 25,
+                    side: THREE.DoubleSide,
+                    flatShading: false
+                });
+
+                this.birdMesh = new THREE.InstancedMesh(geometry, material, this.birdCount);
+                this.birdMesh.castShadow = true;
+                this.birdMesh.receiveShadow = true;
+                this.scene.add(this.birdMesh);
+
+                // Initialize bird positions and velocities
+                const dummy = new THREE.Object3D();
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+
                 for (let i = 0; i < this.birdCount; i++) {
-                    const bird = new Bird(this.scene, this.isMobile);
-                    this.birds.push(bird);
-                    this.birdMeshes.push(bird.group);
+                    const pos = new THREE.Vector3(
+                        (Math.random() - 0.5) * width,
+                        (Math.random() - 0.5) * height * 0.8,
+                        (Math.random() - 0.5) * 20
+                    );
+                    this.positions.push(pos);
+
+                    const vel = new THREE.Vector3(
+                        (Math.random() - 0.5) * 1.5,
+                        (Math.random() - 0.5) * 1.5,
+                        (Math.random() - 0.5) * 0.1
+                    );
+                    this.velocities.push(vel);
+
+                    this.times.push(Math.random() * Math.PI * 2);
+
+                    // Set initial transform
+                    dummy.position.copy(pos);
+                    dummy.lookAt(pos.clone().add(vel.clone().normalize()));
+                    dummy.updateMatrix();
+                    this.birdMesh.setMatrixAt(i, dummy.matrix);
                 }
+
+                this.birdMesh.instanceMatrix.needsUpdate = true;
             }
 
             updateBoids() {
-                // Update each bird's position based on flocking rules
-                for (let i = 0; i < this.birds.length; i++) {
-                    const bird = this.birds[i];
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                const p = this.params;
 
-                    // Separation: avoid crowding neighbors
+                for (let i = 0; i < this.birdCount; i++) {
+                    const pos = this.positions[i];
+                    const vel = this.velocities[i];
+
                     let separation = new THREE.Vector3();
-                    let alignmentVel = new THREE.Vector3();
+                    let alignment = new THREE.Vector3();
                     let cohesion = new THREE.Vector3();
                     let neighborCount = 0;
 
-                    for (let j = 0; j < this.birds.length; j++) {
+                    // Calculate boids forces
+                    for (let j = 0; j < this.birdCount; j++) {
                         if (i === j) continue;
 
-                        const other = this.birds[j];
-                        const distance = bird.position.distanceTo(other.position);
+                        const other = this.positions[j];
+                        const diff = new THREE.Vector3().subVectors(pos, other);
+                        const distance = diff.length();
 
-                        if (distance < 150) {
-                            // Separation
-                            const diff = new THREE.Vector3().subVectors(
-                                bird.position,
-                                other.position
-                            );
-                            diff.normalize();
-                            diff.multiplyScalar(1 / (distance + 1));
-                            separation.add(diff);
+                        if (distance < p.separationRadius && distance > 0) {
+                            const separationForce = diff.clone().normalize().multiplyScalar(1 / (distance + 1));
+                            separation.add(separationForce);
+                        }
 
-                            // Alignment
-                            alignmentVel.add(other.velocity);
-
-                            // Cohesion
-                            cohesion.add(other.position);
-
+                        if (distance < p.alignmentRadius && distance > 0) {
+                            alignment.add(this.velocities[j]);
                             neighborCount++;
+                        }
+
+                        if (distance < p.cohesionRadius && distance > 0) {
+                            cohesion.add(other);
+                            if (distance < p.alignmentRadius) neighborCount++;
                         }
                     }
 
-                    // Apply flocking rules
+                    // Apply separation
+                    if (separation.length() > 0) {
+                        separation.normalize().multiplyScalar(p.separationWeight);
+                        vel.add(separation);
+                    }
+
+                    // Apply alignment
                     if (neighborCount > 0) {
-                        alignmentVel.divideScalar(neighborCount);
-                        alignmentVel.normalize();
-                        alignmentVel.multiplyScalar(0.008);
-                        bird.velocity.add(alignmentVel);
-
-                        cohesion.divideScalar(neighborCount);
-                        cohesion.sub(bird.position);
-                        cohesion.normalize();
-                        cohesion.multiplyScalar(0.004);
-                        bird.velocity.add(cohesion);
+                        alignment.divideScalar(neighborCount).normalize().multiplyScalar(p.alignmentWeight);
+                        vel.add(alignment);
                     }
 
-                    separation.multiplyScalar(0.03);
-                    bird.velocity.add(separation);
-
-                    // Mouse avoidance
-                    const mouseDistance = bird.position.distanceTo(this.mousePos);
-                    if (mouseDistance < 200) {
-                        const fleeVector = new THREE.Vector3().subVectors(
-                            bird.position,
-                            this.mousePos
-                        );
-                        fleeVector.normalize();
-                        fleeVector.multiplyScalar(0.05);
-                        bird.velocity.add(fleeVector);
+                    // Apply cohesion
+                    if (neighborCount > 0) {
+                        cohesion.divideScalar(neighborCount).sub(pos).normalize().multiplyScalar(p.cohesionWeight);
+                        vel.add(cohesion);
                     }
 
-                    // Speed limit
-                    const speed = bird.velocity.length();
-                    if (speed > 1.2) {
-                        bird.velocity.normalize().multiplyScalar(1.2);
-                    }
-                    if (speed < 0.15) {
-                        bird.velocity.normalize().multiplyScalar(0.15);
+                    // Mouse repulsion
+                    const mouseDistSq = pos.distanceToSquared(this.mousePos);
+                    if (mouseDistSq < p.mouseRepelRadius * p.mouseRepelRadius) {
+                        const flee = new THREE.Vector3().subVectors(pos, this.mousePos);
+                        if (flee.length() > 0) {
+                            flee.normalize().multiplyScalar(p.mouseRepelWeight);
+                            vel.add(flee);
+                        }
                     }
 
-                    // Reduce Z movement for horizontal flight
-                    bird.velocity.z *= 0.5;
+                    // Speed limiting
+                    const speed = vel.length();
+                    if (speed > p.maxSpeed) {
+                        vel.normalize().multiplyScalar(p.maxSpeed);
+                    } else if (speed < p.minSpeed && speed > 0) {
+                        vel.normalize().multiplyScalar(p.minSpeed);
+                    }
 
-                    // Boundary conditions with wrap-around
-                    const width = window.innerWidth;
-                    const height = window.innerHeight;
-                    const margin = 50;
-
-                    if (bird.position.x > width / 2 + margin) {
-                        bird.position.x = -width / 2 - margin;
-                    }
-                    if (bird.position.x < -width / 2 - margin) {
-                        bird.position.x = width / 2 + margin;
-                    }
-                    if (bird.position.y > height / 2 + margin) {
-                        bird.position.y = -height / 2 - margin;
-                    }
-                    if (bird.position.y < -height / 2 - margin) {
-                        bird.position.y = height / 2 + margin;
-                    }
+                    // Reduce Z movement for horizontal flight emphasis
+                    vel.z *= 0.3;
 
                     // Update position
-                    bird.position.add(bird.velocity);
-                    bird.update();
+                    pos.add(vel);
+
+                    // Boundary wrap-around
+                    if (pos.x > width / 2 + p.boundaryMargin) pos.x = -width / 2 - p.boundaryMargin;
+                    if (pos.x < -width / 2 - p.boundaryMargin) pos.x = width / 2 + p.boundaryMargin;
+                    if (pos.y > height / 2 + p.boundaryMargin) pos.y = -height / 2 - p.boundaryMargin;
+                    if (pos.y < -height / 2 - p.boundaryMargin) pos.y = height / 2 + p.boundaryMargin;
+                    if (Math.abs(pos.z) > 100) pos.z = Math.sign(pos.z) * 50;
                 }
+
+                // Update instanced mesh transforms
+                const dummy = new THREE.Object3D();
+                for (let i = 0; i < this.birdCount; i++) {
+                    const pos = this.positions[i];
+                    const vel = this.velocities[i];
+
+                    dummy.position.copy(pos);
+
+                    // Orient bird toward velocity
+                    if (vel.length() > 0.1) {
+                        dummy.lookAt(pos.clone().add(vel.clone().normalize()));
+                    }
+
+                    // Subtle wing animation via scale
+                    this.times[i] += 0.08;
+                    const wingFlap = Math.sin(this.times[i]) * 0.08;
+                    dummy.scale.set(1 + wingFlap * 0.3, 1, 1);
+
+                    dummy.updateMatrix();
+                    this.birdMesh.setMatrixAt(i, dummy.matrix);
+                }
+                this.birdMesh.instanceMatrix.needsUpdate = true;
             }
 
             animate() {
                 requestAnimationFrame(() => this.animate());
-
                 this.updateBoids();
                 this.renderer.render(this.scene, this.camera);
             }
@@ -1263,126 +1363,6 @@
                 this.camera.updateProjectionMatrix();
 
                 this.renderer.setSize(width, height);
-            }
-        }
-
-        // Individual bird class with boids behavior
-        class Bird {
-            constructor(scene, isMobile = false) {
-                this.scene = scene;
-                this.isMobile = isMobile;
-                this.position = new THREE.Vector3(
-                    (Math.random() - 0.5) * window.innerWidth,
-                    (Math.random() - 0.5) * window.innerHeight * 0.8,
-                    (Math.random() - 0.5) * 10
-                );
-                this.velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.8,
-                    (Math.random() - 0.5) * 0.8,
-                    (Math.random() - 0.5) * 0.05
-                );
-
-                this.createMesh();
-            }
-
-            createMesh() {
-                // Create a simple low-poly bird using cones and spheres
-                this.group = new THREE.Group();
-                this.group.position.copy(this.position);
-
-                // Body - main cylinder/cone
-                const bodyGeometry = new THREE.ConeGeometry(8, 20, 6);
-                const bodyMaterial = new THREE.MeshPhongMaterial({
-                    color: 0x4a4a4a,
-                    shininess: 30
-                });
-                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-                body.castShadow = true;
-                body.receiveShadow = true;
-                this.group.add(body);
-
-                // Head - smaller sphere
-                const headGeometry = new THREE.SphereGeometry(6, 8, 8);
-                const headMaterial = new THREE.MeshPhongMaterial({
-                    color: 0x3a3a3a,
-                    shininess: 40
-                });
-                const head = new THREE.Mesh(headGeometry, headMaterial);
-                head.position.z = 12;
-                head.castShadow = true;
-                head.receiveShadow = true;
-                this.group.add(head);
-
-                // Eyes - tiny spheres
-                const eyeGeometry = new THREE.SphereGeometry(1.5, 6, 6);
-                const eyeMaterial = new THREE.MeshPhongMaterial({
-                    color: 0xffc800,
-                    shininess: 100
-                });
-                const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-                leftEye.position.set(-2.5, 2, 16);
-                this.group.add(leftEye);
-
-                const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-                rightEye.position.set(2.5, 2, 16);
-                this.group.add(rightEye);
-
-                // Wings - triangular geometry
-                const wingGeometry = new THREE.ConeGeometry(25, 10, 3);
-                wingGeometry.rotateX(Math.PI * 0.3);
-
-                const wingMaterial = new THREE.MeshPhongMaterial({
-                    color: 0x5a5a5a,
-                    shininess: 20,
-                    side: THREE.DoubleSide
-                });
-
-                this.leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
-                this.leftWing.position.set(-12, 0, 0);
-                this.leftWing.castShadow = true;
-                this.leftWing.receiveShadow = true;
-                this.group.add(this.leftWing);
-
-                this.rightWing = new THREE.Mesh(wingGeometry, wingMaterial);
-                this.rightWing.position.set(12, 0, 0);
-                this.rightWing.scale.x = -1;
-                this.rightWing.castShadow = true;
-                this.rightWing.receiveShadow = true;
-                this.group.add(this.rightWing);
-
-                // Tail - cone pointing back
-                const tailGeometry = new THREE.ConeGeometry(6, 15, 4);
-                const tailMaterial = new THREE.MeshPhongMaterial({
-                    color: 0x4a4a4a,
-                    shininess: 25
-                });
-                const tail = new THREE.Mesh(tailGeometry, tailMaterial);
-                tail.position.z = -15;
-                tail.rotation.x = Math.PI / 2;
-                tail.castShadow = true;
-                tail.receiveShadow = true;
-                this.group.add(tail);
-
-                this.scene.add(this.group);
-                this.time = Math.random() * Math.PI * 2;
-            }
-
-            update() {
-                this.group.position.copy(this.position);
-
-                // Orient bird toward direction of movement
-                if (this.velocity.length() > 0.1) {
-                    const direction = this.velocity.clone().normalize();
-                    this.group.lookAt(
-                        this.position.clone().add(direction)
-                    );
-                }
-
-                // Animate wings
-                this.time += 0.05;
-                const wingFlap = Math.sin(this.time) * 0.5;
-                this.leftWing.rotation.z = wingFlap;
-                this.rightWing.rotation.z = -wingFlap;
             }
         }
 
