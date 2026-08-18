@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>MUI — Museo Inmersivo Las Condes</title>
+<meta name="description" content="El primer museo inmersivo audiovisual permanente de Chile. Cuatro salas, 290 m² de proyección y 42 millones de píxeles en Isidora Goyenechea 3400, Las Condes.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MUI — Museo Inmersivo Las Condes">
+<meta property="og:description" content="Ceiba: el árbol que conecta los mundos. Muestra inaugural de Josué Ibáñez en el primer museo inmersivo audiovisual permanente de Chile.">
+<meta property="og:locale" content="es_CL">
+<meta name="theme-color" content="#05070A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Las fuentes se cargan sin bloquear el primer pintado -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"></noscript>
+<script>document.documentElement.className+=" js";</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Museum",
+  "name": "Museo Inmersivo Las Condes (MUI)",
+  "description": "Primer museo inmersivo audiovisual permanente de Chile.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Isidora Goyenechea 3400",
+    "addressLocality": "Las Condes",
+    "addressRegion": "Región Metropolitana",
+    "addressCountry": "CL"
+  },
+  "telephone": "+56229637180",
+  "email": "contacto@mui.cl",
+  "openingHours": ["Tu-Su 10:00-14:00", "Tu-Su 15:00-19:00"],
+  "publicAccess": true
+}
+</script>
+<style>
+/* ============================================================
+   MUI — Propuesta de rediseño · Anothen
+   Sistema de diseño: un solo archivo, sin dependencias.
+   ============================================================ */
+
+:root{
+  /* Base — negro con temperatura fría, no negro plano */
+  --bg:        #05070A;
+  --bg-2:      #090D12;
+  --bg-3:      #0E141B;
+
+  /* Tinta */
+  --ink:       #F2EFE9;
+  --ink-dim:   rgba(242,239,233,.64);
+  --ink-faint: rgba(242,239,233,.40);
+  --ink-ghost: rgba(242,239,233,.16);
+
+  /* Acentos — extraídos de la paleta bioluminiscente de Ceiba */
+  --teal:      #3FE0C8;
+  --violet:    #9B6BFF;
+  --coral:     #FF6A4D;
+  --amber:     #FFC46B;
+
+  --line:      rgba(242,239,233,.13);
+  --line-soft: rgba(242,239,233,.07);
+  --surface:   rgba(242,239,233,.035);
+
+  /* Tipografía */
+  --serif: "Instrument Serif", "Times New Roman", serif;
+  --sans:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Ritmo */
+  --gut: clamp(1.25rem, 4vw, 3.5rem);
+  --sec: clamp(5rem, 12vw, 11rem);
+  --maxw: 1440px;
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:clamp(1rem, .96rem + .18vw, 1.0625rem);
+  line-height:1.65;
+  font-weight:300;
+  letter-spacing:-.006em;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+
+::selection{ background:var(--teal); color:#03110E; }
+
+:focus-visible{
+  outline:2px solid var(--teal);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+/* ---------- Utilidades de layout ---------- */
+.wrap{
+  width:100%;
+  max-width:var(--maxw);
+  margin-inline:auto;
+  padding-inline:var(--gut);
+}
+
+.eyebrow{
+  font-size:.6875rem;
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  display:flex;
+  align-items:center;
+  gap:.7em;
+}
+.eyebrow::before{
+  content:"";
+  width:1.75rem;
+  height:1px;
+  background:var(--teal);
+  flex:none;
+}
+
+h1,h2,h3{ font-weight:400; letter-spacing:-.028em; line-height:1.04; }
+
+.display{
+  font-family:var(--serif);
+  font-weight:400;
+  letter-spacing:-.02em;
+  line-height:.98;
+}
+
+.lead{
+  font-size:clamp(1.0625rem, 1rem + .5vw, 1.375rem);
+  line-height:1.55;
+  color:var(--ink-dim);
+  max-width:34ch;      /* medida de lectura — el sitio actual pasa los 100 caracteres */
+  font-weight:300;
+}
+
+p{ max-width:62ch; }
+
+/* ---------- Cinta de propuesta ---------- */
+.ribbon{
+  position:fixed; z-index:200;
+  right:0; bottom:0;
+  display:flex; align-items:center; gap:.55rem;
+  padding:.5rem .85rem;
+  background:rgba(5,7,10,.82);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
+  border-right:1px solid var(--line);
+  border-left:1px solid var(--line);
+  border-right:0;
+  border-radius:8px 0 0 0;
+  font-size:.6875rem;
+  letter-spacing:.06em;
+  color:var(--ink-faint);
+}
+.ribbon b{ color:var(--ink-dim); font-weight:500; }
+.ribbon i{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--amber); flex:none;
+}
+@media (max-width:900px){ .ribbon{ display:none; } }
+
+/* ---------- Navegación ---------- */
+.nav{
+  position:fixed; inset:0 0 auto 0; z-index:100;
+  transition:background .4s var(--ease), border-color .4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.nav.solid{
+  background:rgba(5,7,10,.72);
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border-bottom-color:var(--line-soft);
+}
+.nav-in{
+  display:flex; align-items:center; flex-wrap:nowrap;
+  gap:clamp(.6rem,2.4vw,2.75rem);
+  height:clamp(64px, 8vw, 84px);
+}
+.nav-in > *{ flex:0 0 auto; }
+.nav-in > .brand{ min-width:0; }
+
+/* Logotipo — UNA marca. Los escudos institucionales van al pie. */
+.brand{ display:flex; align-items:baseline; gap:.6rem; margin-right:auto; }
+.brand-mark{
+  font-family:var(--serif);
+  font-size:1.5rem; letter-spacing:.02em; line-height:1;
+}
+.brand-sub{
+  font-size:.5625rem; font-weight:500;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+@media (max-width:560px){ .brand-sub{ display:none; } }
+
+.nav-links{ display:flex; gap:clamp(1rem,2.2vw,2rem); list-style:none; }
+.nav-links a{
+  font-size:.8125rem; font-weight:400; color:var(--ink-dim);
+  letter-spacing:-.005em;
+  position:relative; padding-block:.35rem;
+  transition:color .25s var(--ease);
+}
+.nav-links a::after{
+  content:""; position:absolute; left:0; right:0; bottom:0;
+  height:1px; background:var(--teal);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .35s var(--ease);
+}
+.nav-links a:hover{ color:var(--ink); }
+.nav-links a:hover::after{ transform:scaleX(1); }
+@media (max-width:940px){ .nav-links{ display:none; } }
+
+.lang{
+  display:flex; align-items:center;
+  font-size:.6875rem; font-weight:500; letter-spacing:.08em;
+  color:var(--ink-faint);
+  border:1px solid var(--line); border-radius:999px;
+  overflow:hidden; flex:none;
+}
+.lang button{
+  all:unset; cursor:pointer;
+  padding:.4rem .65rem; line-height:1;
+  transition:background .25s var(--ease), color .25s var(--ease);
+}
+.lang button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
+
+/* Botón primario */
+.btn{
+  display:inline-flex; align-items:center; gap:.6rem;
+  padding:.72rem 1.35rem;
+  border-radius:999px;
+  background:var(--teal); color:#03110E;
+  font-size:.8125rem; font-weight:600; letter-spacing:-.005em;
+  white-space:nowrap;
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  box-shadow:0 0 0 0 rgba(63,224,200,.35);
+}
+.btn:hover{ transform:translateY(-1px); box-shadow:0 6px 28px -6px rgba(63,224,200,.55); }
+.btn .price{
+  font-variant-numeric:tabular-nums;
+  padding-left:.6rem; margin-left:.1rem;
+  border-left:1px solid rgba(3,17,14,.22);
+  font-weight:500;
+}
+.btn-ghost{
+  background:transparent; color:var(--ink);
+  border:1px solid var(--line);
+  box-shadow:none;
+}
+.btn-ghost:hover{ border-color:var(--ink-faint); box-shadow:none; }
+@media (max-width:560px){ .nav .btn{ display:none; } }
+
+/* Menú móvil */
+.burger{
+  all:unset; cursor:pointer; flex:none;
+  width:40px; height:40px;
+  display:none; place-items:center;
+  border:1px solid var(--line); border-radius:50%;
+}
+.burger span{ display:block; width:15px; height:1px; background:var(--ink); transition:transform .3s var(--ease), opacity .2s; }
+.burger span+span{ margin-top:4px; }
+.burger[aria-expanded="true"] span:nth-child(1){ transform:translateY(5px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+.burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-5px) rotate(-45deg); }
+@media (max-width:940px){ .burger{ display:grid !important; order:99; } }
+@media (max-width:420px){ .lang button{ padding:.35rem .5rem; } }
+
+.drawer{
+  position:fixed; inset:0; z-index:99;
+  background:rgba(5,7,10,.97);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  display:grid; align-content:center; gap:.25rem;
+  padding:var(--gut);
+  opacity:0; pointer-events:none;
+  transition:opacity .35s var(--ease);
+}
+.drawer.open{ opacity:1; pointer-events:auto; }
+.drawer a{
+  font-family:var(--serif);
+  font-size:clamp(2rem,9vw,3.25rem);
+  line-height:1.25;
+  color:var(--ink-dim);
+  transition:color .25s var(--ease);
+}
+.drawer a:hover{ color:var(--ink); }
+.drawer .btn{ margin-top:2rem; justify-self:start; font-size:.9375rem; padding:.9rem 1.6rem; }
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;
+  min-height:100svh;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding-top:clamp(6rem,13vh,9rem);
+  padding-bottom:clamp(2rem,5vh,3.25rem);
+  overflow:hidden;
+  isolation:isolate;
+}
+#field{
+  position:absolute; inset:0; z-index:-2;
+  width:100%; height:100%;
+}
+.hero::after{  /* viñeta + piso, para que el texto siempre tenga contraste */
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:
+    linear-gradient(90deg, rgba(5,7,10,.90) 0%, rgba(5,7,10,.62) 34%, rgba(5,7,10,.15) 68%, transparent 100%),
+    linear-gradient(180deg, rgba(5,7,10,.80) 0%, rgba(5,7,10,.30) 24%, rgba(5,7,10,.42) 58%, rgba(5,7,10,.97) 100%),
+    radial-gradient(130% 95% at 60% -5%, transparent 32%, rgba(5,7,10,.62) 100%);
+}
+
+.hero-head{ display:grid; gap:clamp(.9rem,2vw,1.35rem); }
+
+/* Composición editorial: en desktop la bajada va a la izquierda y el
+   texto + CTA a la derecha, para no dejar medio hero vacío. */
+.hero-lower{ display:grid; gap:clamp(1rem,2.5vw,2rem); }
+@media (min-width:1024px){
+  .hero-lower{ grid-template-columns:1fr 1fr; align-items:end; gap:clamp(2rem,5vw,4.5rem); }
+  .hero-sub{ max-width:13ch; margin-bottom:.25rem; }
+}
+.hero h1{
+  font-family:var(--serif);
+  font-size:clamp(4.25rem, 17.5vw, 15rem);
+  line-height:.82;
+  letter-spacing:-.035em;
+  margin-block:.1em -.04em;
+}
+.hero h1 em{
+  font-style:italic;
+  background:linear-gradient(96deg, var(--teal) 0%, var(--violet) 52%, var(--coral) 100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+}
+.hero-sub{
+  font-family:var(--serif); font-style:italic;
+  font-size:clamp(1.25rem, 3.6vw, 2.5rem);
+  line-height:1.15; color:var(--ink-dim);
+  max-width:20ch;
+}
+.hero-cta{ display:flex; flex-wrap:wrap; gap:.75rem; align-items:center; margin-top:clamp(1rem,2.5vh,1.5rem); }
+.hero-cta .btn{ padding:.9rem 1.6rem; font-size:.9375rem; }
+
+/* Franja de datos duros del hero */
+.facts{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1px;
+  margin-top:clamp(1.5rem,4.5vh,3rem);
+  border-top:1px solid var(--line-soft);
+  background:var(--line-soft);
+}
+.facts div{
+  background:var(--bg);
+  padding:1.1rem 0 .2rem;
+  padding-right:1rem;
+}
+.facts dt{
+  font-size:.625rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-faint); margin-bottom:.35rem;
+}
+.facts dd{ font-size:.9375rem; color:var(--ink); font-weight:400; }
+
+/* ---------- Secciones ---------- */
+section{ position:relative; }
+.sec{ padding-block:var(--sec); }
+.sec-head{ display:grid; gap:1.1rem; margin-bottom:clamp(2.5rem,6vw,4.5rem); }
+.sec-head h2{
+  font-family:var(--serif);
+  font-size:clamp(2.25rem, 6.5vw, 5rem);
+  max-width:19ch;
+}
+.rule{ height:1px; background:var(--line-soft); border:0; }
+
+/* ---------- Números / la máquina ---------- */
+.machine{ background:var(--bg-2); border-block:1px solid var(--line-soft); }
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:1px; background:var(--line-soft);
+  border:1px solid var(--line-soft);
+}
+.metric{
+  background:var(--bg-2);
+  padding:clamp(1.5rem,3.5vw,2.5rem);
+  display:grid; align-content:start; gap:.5rem;
+  transition:background .4s var(--ease);
+}
+.metric:hover{ background:var(--bg-3); }
+.metric .n{
+  font-family:var(--serif);
+  font-size:clamp(2.75rem,7vw,4.75rem);
+  line-height:.95;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.03em;
+}
+.metric .n u{ text-decoration:none; font-size:.42em; color:var(--teal); margin-left:.12em; letter-spacing:0; }
+.metric .k{
+  font-size:.75rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.metric p{ font-size:.875rem; color:var(--ink-dim); max-width:32ch; }
+
+/* ---------- Bloques editoriales ---------- */
+.split{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));
+  gap:clamp(2rem,5vw,5rem);
+  align-items:center;
+}
+.split.tight{ align-items:start; }
+.prose{ display:grid; gap:1.15rem; }
+.prose p{ color:var(--ink-dim); }
+.prose p strong{ color:var(--ink); font-weight:500; }
+
+/* Lámina de imagen — cae con gracia al degradado si no hay foto */
+.plate{
+  position:relative;
+  aspect-ratio:4/5;
+  border-radius:3px;
+  overflow:hidden;
+  background:
+    radial-gradient(90% 70% at 20% 15%, rgba(155,107,255,.55), transparent 60%),
+    radial-gradient(80% 60% at 85% 40%, rgba(63,224,200,.42), transparent 62%),
+    radial-gradient(70% 70% at 55% 95%, rgba(255,106,77,.38), transparent 60%),
+    linear-gradient(150deg,#0B1016,#141B24);
+  border:1px solid var(--line-soft);
+}
+.plate.wide{ aspect-ratio:16/10; }
+.plate img{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+}
+.plate::after{ /* grano, para que el degradado no se vea plástico */
+  content:""; position:absolute; inset:0; pointer-events:none;
+  opacity:.32; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+.plate figcaption{
+  position:absolute; left:0; right:0; bottom:0; z-index:2;
+  padding:.85rem 1rem;
+  font-size:.6875rem; letter-spacing:.05em; color:var(--ink-dim);
+  background:linear-gradient(transparent, rgba(5,7,10,.85));
+}
+
+/* Ciudades de la gira */
+.tour{ display:flex; flex-wrap:wrap; gap:.5rem; list-style:none; }
+.tour li{
+  font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;
+  padding:.4rem .8rem; border:1px solid var(--line); border-radius:999px;
+  color:var(--ink-faint);
+}
+.tour li[aria-current]{ color:#03110E; background:var(--teal); border-color:var(--teal); font-weight:600; }
+
+/* ---------- Accesibilidad ---------- */
+.access{
+  background:
+    radial-gradient(110% 80% at 85% 0%, rgba(63,224,200,.09), transparent 55%),
+    var(--bg);
+  border-block:1px solid var(--line-soft);
+}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
+  gap:clamp(1rem,2vw,1.5rem);
+}
+.card{
+  border:1px solid var(--line-soft);
+  border-radius:4px;
+  padding:clamp(1.4rem,3vw,2rem);
+  background:var(--surface);
+  display:grid; gap:.7rem; align-content:start;
+  transition:border-color .4s var(--ease), transform .4s var(--ease);
+}
+.card:hover{ border-color:var(--line); transform:translateY(-2px); }
+.card h3{ font-size:1.0625rem; font-weight:500; letter-spacing:-.015em; }
+.card p{ font-size:.875rem; color:var(--ink-dim); }
+.card .ico{
+  width:34px; height:34px; border-radius:50%;
+  display:grid; place-items:center;
+  border:1px solid var(--teal); color:var(--teal);
+  font-size:.875rem; margin-bottom:.3rem;
+}
+
+/* ---------- Visita: precios y horarios ---------- */
+.visit-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));
+  gap:clamp(2rem,5vw,4rem);
+  align-items:start;
+}
+.rates{ width:100%; border-collapse:collapse; }
+.rates caption{
+  text-align:left; font-size:.625rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-faint);
+  padding-bottom:1rem;
+}
+.rates th, .rates td{
+  text-align:left; padding:.95rem 0;
+  border-bottom:1px solid var(--line-soft);
+  font-weight:300; font-size:.9375rem;
+}
+.rates th{ color:var(--ink-dim); font-weight:400; }
+.rates td{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  font-weight:400;
+}
+.rates tr:last-child th, .rates tr:last-child td{ border-bottom:0; }
+.rates .free{ color:var(--teal); }
+
+.info-list{ list-style:none; display:grid; gap:1.4rem; }
+.info-list dt{
+  font-size:.625rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-faint); margin-bottom:.4rem;
+}
+.info-list dd{ font-size:.9375rem; color:var(--ink); }
+.info-list dd span{ display:block; color:var(--ink-dim); font-size:.875rem; }
+.info-list a{ border-bottom:1px solid var(--ink-ghost); transition:border-color .3s; }
+.info-list a:hover{ border-bottom-color:var(--teal); }
+
+/* ---------- Línea de tiempo ---------- */
+.timeline{ display:grid; gap:0; border-top:1px solid var(--line-soft); }
+.tl{
+  display:grid;
+  grid-template-columns:minmax(80px,.18fr) 1fr;
+  gap:clamp(1rem,4vw,3rem);
+  padding-block:clamp(1.75rem,4vw,2.75rem);
+  border-bottom:1px solid var(--line-soft);
+  transition:background .4s var(--ease);
+}
+.tl:hover{ background:var(--surface); }
+.tl .yr{
+  font-family:var(--serif);
+  font-size:clamp(1.5rem,3.5vw,2.25rem);
+  color:var(--teal); line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.tl h3{ font-size:1.125rem; font-weight:400; margin-bottom:.5rem; letter-spacing:-.015em; }
+.tl p{ font-size:.9375rem; color:var(--ink-dim); }
+
+/* ---------- Pie ---------- */
+footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-block:clamp(3.5rem,8vw,6rem) 0; }
+.foot-top{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));
+  gap:clamp(2rem,4vw,3rem);
+  padding-bottom:clamp(2.5rem,5vw,4rem);
+}
+.foot-col h4{
+  font-size:.625rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:500; margin-bottom:1.1rem;
+}
+.foot-col ul{ list-style:none; display:grid; gap:.6rem; }
+.foot-col a{ font-size:.875rem; color:var(--ink-dim); transition:color .25s var(--ease); }
+.foot-col a:hover{ color:var(--ink); }
+
+/* Escudos institucionales: aquí, jerarquizados, no encima del hero */
+.inst{
+  display:flex; flex-wrap:wrap; align-items:center; gap:clamp(1.25rem,3vw,2.5rem);
+  padding-block:clamp(1.75rem,4vw,2.5rem);
+  border-top:1px solid var(--line-soft);
+}
+.inst-item{ display:grid; gap:.2rem; }
+.inst-item b{ font-size:.8125rem; font-weight:500; letter-spacing:-.01em; color:var(--ink-dim); }
+.inst-item span{ font-size:.625rem; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint); }
+
+.legal{
+  display:flex; flex-wrap:wrap; gap:1rem 2rem; justify-content:space-between;
+  padding-block:1.75rem;
+  border-top:1px solid var(--line-soft);
+  font-size:.75rem; color:var(--ink-faint);
+}
+.legal p{ max-width:70ch; }
+
+/* ---------- Barra fija móvil ---------- */
+.mbar{
+  position:fixed; z-index:90; left:0; right:0; bottom:0;
+  display:none; align-items:center; gap:.9rem;
+  padding:.7rem var(--gut) calc(.7rem + env(safe-area-inset-bottom));
+  background:rgba(5,7,10,.86);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--line);
+  transform:translateY(110%);
+  transition:transform .45s var(--ease);
+}
+.mbar.up{ transform:translateY(0); }
+.mbar .m-price{ display:grid; margin-right:auto; }
+.mbar .m-price b{ font-size:.9375rem; font-weight:500; }
+.mbar .m-price span{ font-size:.6875rem; color:var(--ink-faint); }
+.mbar .btn{ flex:none; }
+@media (max-width:720px){ .mbar{ display:flex; } body{ padding-bottom:4.5rem; } }
+
+/* ---------- Revelado en scroll ---------- */
+/* Progresivo: sin JS confirmado el contenido nunca se oculta */
+.js .rv{ opacity:0; transform:translateY(22px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
+.rv.in{ opacity:1; transform:none; }
+.rv.d1{ transition-delay:.08s } .rv.d2{ transition-delay:.16s } .rv.d3{ transition-delay:.24s }
+
+/* ---------- Respeto sensorial ----------
+   El museo ofrece funciones adaptadas para personas neurodivergentes.
+   El sitio hace lo propio: sin movimiento para quien lo pide. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .js .rv{ opacity:1; transform:none; }
+}
+</style>
+</head>
+<body>
+
+<div class="ribbon"><i></i><b>Propuesta de rediseño</b> — no oficial · Anothen para MUI</div>
+
+<!-- ══════════════ NAV ══════════════ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="brand" aria-label="MUI — Museo Inmersivo Las Condes">
+      <span class="brand-mark">MUI</span>
+      <span class="brand-sub" data-es="Museo Inmersivo Las Condes" data-en="Las Condes Immersive Museum">Museo Inmersivo Las Condes</span>
+    </a>
+
+    <nav aria-label="Principal">
+      <ul class="nav-links">
+        <li><a href="#muestra"    data-es="La muestra"   data-en="Exhibition">La muestra</a></li>
+        <li><a href="#experiencia" data-es="La experiencia" data-en="Experience">La experiencia</a></li>
+        <li><a href="#accesibilidad" data-es="Accesibilidad" data-en="Accessibility">Accesibilidad</a></li>
+        <li><a href="#visita"     data-es="Visita"       data-en="Visit">Visita</a></li>
+        <li><a href="#museo"      data-es="El museo"     data-en="The museum">El museo</a></li>
+      </ul>
+    </nav>
+
+    <div class="lang" role="group" aria-label="Idioma">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+
+    <a href="#visita" class="btn"><span data-es="Comprar entradas" data-en="Buy tickets">Comprar entradas</span><span class="price">$7.000</span></a>
+
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="drawer" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  <a href="#muestra"      data-es="La muestra"     data-en="Exhibition">La muestra</a>
+  <a href="#experiencia"  data-es="La experiencia" data-en="Experience">La experiencia</a>
+  <a href="#accesibilidad" data-es="Accesibilidad" data-en="Accessibility">Accesibilidad</a>
+  <a href="#visita"       data-es="Visita"         data-en="Visit">Visita</a>
+  <a href="#museo"        data-es="El museo"       data-en="The museum">El museo</a>
+  <a href="#visita" class="btn"><span data-es="Comprar entradas" data-en="Buy tickets">Comprar entradas</span><span class="price">$7.000</span></a>
+</div>
+
+<!-- ══════════════ HERO ══════════════ -->
+<main id="top">
+<section class="hero">
+  <canvas id="field" aria-hidden="true"></canvas>
+
+  <div class="wrap">
+    <div class="hero-head">
+      <p class="eyebrow rv"><span data-es="En exhibición — Muestra inaugural" data-en="Now showing — Inaugural exhibition">En exhibición — Muestra inaugural</span></p>
+
+      <h1 class="rv d1">Ceib<em>a</em></h1>
+
+      <div class="hero-lower">
+      <p class="hero-sub rv d2" data-es="el árbol que conecta los mundos" data-en="the tree that connects the worlds">el árbol que conecta los mundos</p>
+
+      <div class="hero-right">
+      <p class="lead rv d3" data-es="Una obra del artista digital mexicano Josué Ibáñez. Después de Londres, Barcelona y Cannes, llega a Santiago para inaugurar el primer museo inmersivo audiovisual permanente de Chile." data-en="A work by Mexican digital artist Josué Ibáñez. After London, Barcelona and Cannes, it arrives in Santiago to inaugurate Chile's first permanent immersive audiovisual museum.">Una obra del artista digital mexicano Josué Ibáñez. Después de Londres, Barcelona y Cannes, llega a Santiago para inaugurar el primer museo inmersivo audiovisual permanente de Chile.</p>
+
+      <div class="hero-cta rv d3">
+        <a href="#visita" class="btn"><span data-es="Comprar entradas" data-en="Buy tickets">Comprar entradas</span><span class="price">$7.000</span></a>
+        <a href="#experiencia" class="btn btn-ghost" data-es="Ver la experiencia" data-en="See the experience">Ver la experiencia</a>
+      </div>
+      </div>
+      </div>
+    </div>
+
+    <dl class="facts rv d3">
+      <div><dt data-es="Duración" data-en="Duration">Duración</dt><dd data-es="50 minutos" data-en="50 minutes">50 minutos</dd></div>
+      <div><dt data-es="Por función" data-en="Per session">Por función</dt><dd data-es="65 personas" data-en="65 people">65 personas</dd></div>
+      <div><dt data-es="Abierto" data-en="Open">Abierto</dt><dd data-es="Martes a domingo" data-en="Tuesday to Sunday">Martes a domingo</dd></div>
+      <div><dt data-es="Cómo llegar" data-en="Getting here">Cómo llegar</dt><dd data-es="Metro El Golf" data-en="El Golf Station">Metro El Golf</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ══════════════ LA EXPERIENCIA / LA MÁQUINA ══════════════ -->
+<section class="sec machine" id="experiencia">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow rv"><span data-es="La experiencia" data-en="The experience">La experiencia</span></p>
+      <h2 class="display rv d1" data-es="Cuatro salas construidas para que la imagen te rodee." data-en="Four rooms built so the image surrounds you.">Cuatro salas construidas para que la imagen te rodee.</h2>
+      <p class="lead rv d2" data-es="No hay pantallas que mirar: hay superficies que responden. Los muros reaccionan cuando caminas y el sonido se mueve contigo." data-en="There are no screens to look at: there are surfaces that respond. The walls react as you walk and the sound moves with you.">No hay pantallas que mirar: hay superficies que responden. Los muros reaccionan cuando caminas y el sonido se mueve contigo.</p>
+    </div>
+
+    <div class="metrics">
+      <div class="metric rv">
+        <span class="n" data-count="290">0<u>m²</u></span>
+        <span class="k" data-es="Superficie de proyección" data-en="Projection surface">Superficie de proyección</span>
+        <p data-es="Proyección continua sobre muros y suelo, sin cortes ni marcos." data-en="Continuous projection across walls and floor, with no cuts or frames.">Proyección continua sobre muros y suelo, sin cortes ni marcos.</p>
+      </div>
+      <div class="metric rv d1">
+        <span class="n" data-count="76">0<u>m²</u></span>
+        <span class="k" data-es="Pantallas LED" data-en="LED screens">Pantallas LED</span>
+        <p data-es="Paneles de alta densidad que sostienen el negro y el color saturado." data-en="High-density panels that hold deep blacks and saturated color.">Paneles de alta densidad que sostienen el negro y el color saturado.</p>
+      </div>
+      <div class="metric rv d2">
+        <span class="n" data-count="42">0<u>millones</u></span>
+        <span class="k" data-es="Píxeles en alta definición" data-en="High-definition pixels">Píxeles en alta definición</span>
+        <p data-es="Resolución suficiente para que la imagen no se descomponga de cerca." data-en="Enough resolution that the image doesn't break down up close.">Resolución suficiente para que la imagen no se descomponga de cerca.</p>
+      </div>
+      <div class="metric rv d3">
+        <span class="n" data-count="16">0</span>
+        <span class="k" data-es="Sensores de movimiento" data-en="Motion sensors">Sensores de movimiento</span>
+        <p data-es="Detectan a los visitantes y hacen que la obra cambie con su paso." data-en="They detect visitors and make the work change as they move.">Detectan a los visitantes y hacen que la obra cambie con su paso.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CEIBA ══════════════ -->
+<section class="sec" id="muestra">
+  <div class="wrap">
+    <div class="split">
+      <div class="prose rv">
+        <p class="eyebrow"><span data-es="Muestra inaugural" data-en="Inaugural exhibition">Muestra inaugural</span></p>
+        <h2 class="display" style="font-size:clamp(2.25rem,6vw,4.5rem)">Ceiba</h2>
+        <p data-es="En las culturas mesoamericanas la ceiba es el árbol sagrado: sus raíces sostienen el inframundo, su tronco atraviesa la tierra y sus ramas alcanzan el cielo. Un solo cuerpo uniendo tres mundos." data-en="In Mesoamerican cultures the ceiba is the sacred tree: its roots hold the underworld, its trunk crosses the earth and its branches reach the sky. A single body joining three worlds.">En las culturas mesoamericanas la ceiba es el árbol sagrado: sus raíces sostienen el inframundo, su tronco atraviesa la tierra y sus ramas alcanzan el cielo. Un solo cuerpo uniendo tres mundos.</p>
+        <p data-es="Josué Ibáñez toma esa imagen y la convierte en un recorrido sensorial de gran formato: animación digital, luz y sonido envolvente que transforman la sala en un viaje contemplativo entre la naturaleza, la humanidad y el universo." data-en="Josué Ibáñez takes that image and turns it into a large-format sensory journey: digital animation, light and immersive sound that transform the room into a contemplative passage between nature, humanity and the universe.">Josué Ibáñez toma esa imagen y la convierte en un recorrido sensorial de gran formato: animación digital, luz y sonido envolvente que transforman la sala en un viaje contemplativo entre la naturaleza, la humanidad y el universo.</p>
+        <p><strong data-es="Con Ceiba, el MUI inaugura una cartelera permanente de arte digital." data-en="With Ceiba, MUI opens a permanent program of digital art.">Con Ceiba, el MUI inaugura una cartelera permanente de arte digital.</strong></p>
+        <ul class="tour" style="margin-top:.6rem">
+          <li>Londres</li><li>Barcelona</li><li>Cannes</li><li aria-current="true">Santiago</li>
+        </ul>
+      </div>
+
+      <figure class="plate rv d2">
+        <img src="img/ceiba.jpg" alt="Sala inmersiva del MUI con la obra Ceiba proyectada sobre muros y suelo" loading="lazy" onerror="this.remove()">
+        <figcaption>Josué Ibáñez · <i>Ceiba: el árbol que conecta los mundos</i>, 2026</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ ACCESIBILIDAD ══════════════ -->
+<section class="sec access" id="accesibilidad">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow rv"><span data-es="Accesibilidad e inclusión" data-en="Accessibility and inclusion">Accesibilidad e inclusión</span></p>
+      <h2 class="display rv d1" data-es="Una experiencia intensa no tiene por qué ser una experiencia excluyente." data-en="An intense experience doesn't have to be an excluding one.">Una experiencia intensa no tiene por qué ser una experiencia excluyente.</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card rv">
+        <span class="ico" aria-hidden="true">◐</span>
+        <h3 data-es="Funciones adaptadas" data-en="Adapted sessions">Funciones adaptadas</h3>
+        <p data-es="En alianza con la Fundación CpueD, el MUI ofrece funciones para personas neurodivergentes con ajustes de luz y sonido, en horarios de menor afluencia." data-en="In partnership with Fundación CpueD, MUI offers sessions for neurodivergent visitors with adjusted light and sound, at quieter times.">En alianza con la Fundación CpueD, el MUI ofrece funciones para personas neurodivergentes con ajustes de luz y sonido, en horarios de menor afluencia.</p>
+      </div>
+      <div class="card rv d1">
+        <span class="ico" aria-hidden="true">↔</span>
+        <h3 data-es="Recorrido sin escalones" data-en="Step-free route">Recorrido sin escalones</h3>
+        <p data-es="Las cuatro salas se recorren en un circuito continuo. Si necesitas asistencia para tu visita, escríbenos antes y la coordinamos." data-en="The four rooms form one continuous circuit. If you need assistance for your visit, write to us in advance and we'll arrange it.">Las cuatro salas se recorren en un circuito continuo. Si necesitas asistencia para tu visita, escríbenos antes y la coordinamos.</p>
+      </div>
+      <div class="card rv d2">
+        <span class="ico" aria-hidden="true">✎</span>
+        <h3 data-es="Sabes qué vas a encontrar" data-en="Know what to expect">Sabes qué vas a encontrar</h3>
+        <p data-es="Publicamos con antelación la intensidad de luz y sonido de cada muestra, para que puedas decidir si es la visita adecuada para ti o para tu familia." data-en="We publish the light and sound intensity of each exhibition in advance, so you can decide whether it's the right visit for you or your family.">Publicamos con antelación la intensidad de luz y sonido de cada muestra, para que puedas decidir si es la visita adecuada para ti o para tu familia.</p>
+      </div>
+      <div class="card rv d3">
+        <span class="ico" aria-hidden="true">✉</span>
+        <h3 data-es="Necesidades específicas" data-en="Specific needs">Necesidades específicas</h3>
+        <p><span data-es="Coordinamos visitas para personas con requerimientos particulares en" data-en="We arrange visits for people with particular requirements at">Coordinamos visitas para personas con requerimientos particulares en</span> <a href="mailto:ventas@mui.cl" style="color:var(--teal)">ventas@mui.cl</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ VISITA ══════════════ -->
+<section class="sec" id="visita">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow rv"><span data-es="Planifica tu visita" data-en="Plan your visit">Planifica tu visita</span></p>
+      <h2 class="display rv d1" data-es="Todo lo que necesitas saber, antes de venir." data-en="Everything you need to know, before you come.">Todo lo que necesitas saber, antes de venir.</h2>
+    </div>
+
+    <div class="visit-grid">
+      <div class="rv">
+        <table class="rates">
+          <caption data-es="Entradas" data-en="Admission">Entradas</caption>
+          <tbody>
+            <tr><th data-es="General" data-en="General">General</th><td>$7.000</td></tr>
+            <tr><th data-es="Tarjeta Vecino Las Condes" data-en="Las Condes resident card">Tarjeta Vecino Las Condes</th><td>$3.500</td></tr>
+            <tr><th data-es="Adulto mayor" data-en="Senior">Adulto mayor <span style="color:var(--ink-faint)" data-es="(en boletería)" data-en="(at the box office)">(en boletería)</span></th><td>$4.000</td></tr>
+            <tr><th data-es="Estudiante" data-en="Student">Estudiante <span style="color:var(--ink-faint)" data-es="(en boletería)" data-en="(at the box office)">(en boletería)</span></th><td>$2.500</td></tr>
+            <tr><th data-es="Menores de 6 años" data-en="Under 6">Menores de 6 años</th><td class="free" data-es="Liberado" data-en="Free">Liberado</td></tr>
+          </tbody>
+        </table>
+        <a href="#" class="btn" style="margin-top:2rem;padding:.9rem 1.6rem;font-size:.9375rem" data-es="Elegir día y función" data-en="Choose day and session">Elegir día y función</a>
+      </div>
+
+      <dl class="info-list rv d1">
+        <div>
+          <dt data-es="Horario" data-en="Opening hours">Horario</dt>
+          <dd data-es="Martes a domingo" data-en="Tuesday to Sunday">Martes a domingo
+            <span>10:00 — 14:00 · 15:00 — 19:00</span>
+            <span data-es="Lunes cerrado" data-en="Closed on Mondays">Lunes cerrado</span>
+          </dd>
+        </div>
+        <div>
+          <dt data-es="Dirección" data-en="Address">Dirección</dt>
+          <dd>Isidora Goyenechea 3400, Las Condes
+            <span data-es="Metro El Golf — Línea 1, salida Isidora Goyenechea" data-en="El Golf Station — Line 1, Isidora Goyenechea exit">Metro El Golf — Línea 1, salida Isidora Goyenechea</span>
+          </dd>
+        </div>
+        <div>
+          <dt data-es="La visita" data-en="The visit">La visita</dt>
+          <dd data-es="50 minutos aproximados" data-en="Approximately 50 minutes">50 minutos aproximados
+            <span data-es="Máximo 65 personas por función. Te recomendamos llegar 10 minutos antes." data-en="Maximum 65 people per session. We recommend arriving 10 minutes early.">Máximo 65 personas por función. Te recomendamos llegar 10 minutos antes.</span>
+          </dd>
+        </div>
+        <div>
+          <dt data-es="Contacto" data-en="Contact">Contacto</dt>
+          <dd><a href="tel:+56229637180">+56 22 963 71 80</a>
+            <span><a href="mailto:contacto@mui.cl">contacto@mui.cl</a></span>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ EL MUSEO / HISTORIA ══════════════ -->
+<section class="sec machine" id="museo">
+  <div class="wrap">
+    <div class="split tight" style="margin-bottom:clamp(2.5rem,6vw,4.5rem)">
+      <div class="prose rv">
+        <p class="eyebrow"><span data-es="El museo" data-en="The museum">El museo</span></p>
+        <h2 class="display" style="font-size:clamp(2.25rem,6vw,4.5rem)" data-es="La fachada es de 1945. El interior es de 2026." data-en="The façade is from 1945. The interior is from 2026.">La fachada es de 1945. El interior es de 2026.</h2>
+        <p data-es="El MUI ocupa una casona de Isidora Goyenechea levantada por el arquitecto Carlos Cruz Eyzaguirre en los años cuarenta. Por fuera no ha cambiado. Por dentro, ya no queda nada de lo que había." data-en="MUI occupies a house on Isidora Goyenechea built by architect Carlos Cruz Eyzaguirre in the 1940s. From the outside nothing has changed. Inside, nothing of what was there remains.">El MUI ocupa una casona de Isidora Goyenechea levantada por el arquitecto Carlos Cruz Eyzaguirre en los años cuarenta. Por fuera no ha cambiado. Por dentro, ya no queda nada de lo que había.</p>
+      </div>
+      <figure class="plate wide rv d2">
+        <img src="img/casona.jpg" alt="Fachada de la casona de Isidora Goyenechea que alberga el MUI" loading="lazy" onerror="this.remove()">
+        <figcaption data-es="Isidora Goyenechea 3400 — la fachada original se conserva intacta" data-en="Isidora Goyenechea 3400 — the original façade is preserved intact">Isidora Goyenechea 3400 — la fachada original se conserva intacta</figcaption>
+      </figure>
+    </div>
+
+    <div class="timeline">
+      <div class="tl rv">
+        <span class="yr">1945</span>
+        <div>
+          <h3 data-es="Una casa en Isidora Goyenechea" data-en="A house on Isidora Goyenechea">Una casa en Isidora Goyenechea</h3>
+          <p data-es="El arquitecto Carlos Cruz Eyzaguirre termina la construcción de la casona, en lo que todavía era el borde residencial de Santiago." data-en="Architect Carlos Cruz Eyzaguirre completes the house, on what was then the residential edge of Santiago.">El arquitecto Carlos Cruz Eyzaguirre termina la construcción de la casona, en lo que todavía era el borde residencial de Santiago.</p>
+        </div>
+      </div>
+      <div class="tl rv">
+        <span class="yr">2015</span>
+        <div>
+          <h3 data-es="Museo Interactivo Las Condes" data-en="Las Condes Interactive Museum">Museo Interactivo Las Condes</h3>
+          <p data-es="La casa abre como museo municipal con salas dedicadas a la historia y la ciencia: el Imperio Romano, la Antigua Grecia, muestras educativas para escolares." data-en="The house opens as a municipal museum with rooms devoted to history and science: the Roman Empire, Ancient Greece, educational exhibits for schools.">La casa abre como museo municipal con salas dedicadas a la historia y la ciencia: el Imperio Romano, la Antigua Grecia, muestras educativas para escolares.</p>
+        </div>
+      </div>
+      <div class="tl rv">
+        <span class="yr">2026</span>
+        <div>
+          <h3 data-es="Museo Inmersivo Las Condes" data-en="Las Condes Immersive Museum">Museo Inmersivo Las Condes</h3>
+          <p data-es="En los 125 años de la comuna, el interior se vacía y se reconstruye completo. Nace el primer museo inmersivo audiovisual permanente de Chile, dedicado al arte digital." data-en="For the district's 125th anniversary, the interior is emptied and rebuilt entirely. Chile's first permanent immersive audiovisual museum is born, devoted to digital art.">En los 125 años de la comuna, el interior se vacía y se reconstruye completo. Nace el primer museo inmersivo audiovisual permanente de Chile, dedicado al arte digital.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ══════════════ PIE ══════════════ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-col">
+        <div class="brand" style="margin-bottom:1rem">
+          <span class="brand-mark">MUI</span>
+        </div>
+        <p style="font-size:.875rem;color:var(--ink-dim);max-width:30ch" data-es="Museo Inmersivo Las Condes. Arte, ciencia y tecnología." data-en="Las Condes Immersive Museum. Art, science and technology.">Museo Inmersivo Las Condes. Arte, ciencia y tecnología.</p>
+      </div>
+
+      <div class="foot-col">
+        <h4 data-es="Visita" data-en="Visit">Visita</h4>
+        <ul>
+          <li><a href="#visita" data-es="Entradas y horarios" data-en="Tickets and hours">Entradas y horarios</a></li>
+          <li><a href="#accesibilidad" data-es="Accesibilidad" data-en="Accessibility">Accesibilidad</a></li>
+          <li><a href="#visita" data-es="Cómo llegar" data-en="Getting here">Cómo llegar</a></li>
+          <li><a href="#" data-es="Visitas de colegios" data-en="School visits">Visitas de colegios</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h4 data-es="Contacto" data-en="Contact">Contacto</h4>
+        <ul>
+          <li><a href="tel:+56229637180">+56 22 963 71 80</a></li>
+          <li><a href="mailto:contacto@mui.cl">contacto@mui.cl</a></li>
+          <li><a href="mailto:ventas@mui.cl">ventas@mui.cl</a></li>
+          <li style="font-size:.875rem;color:var(--ink-dim)">Isidora Goyenechea 3400<br>Las Condes, Santiago</li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h4 data-es="Transparencia" data-en="Transparency">Transparencia</h4>
+        <ul>
+          <li><a href="#" data-es="Transparencia Activa — Ley 20.285" data-en="Active Transparency — Law 20.285">Transparencia Activa — Ley 20.285</a></li>
+          <li><a href="#" data-es="Solicitar información pública" data-en="Request public information">Solicitar información pública</a></li>
+          <li><a href="#" data-es="Canal de denuncias — Ley 20.393" data-en="Whistleblower channel — Law 20.393">Canal de denuncias — Ley 20.393</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Los escudos institucionales viven aquí, con jerarquía, no sobre el hero -->
+    <div class="inst">
+      <div class="inst-item"><b>Municipalidad de Las Condes</b><span data-es="Propietario" data-en="Owner">Propietario</span></div>
+      <div class="inst-item"><b>Corporación Cultural Las Condes</b><span data-es="Administración" data-en="Operator">Administración</span></div>
+      <div class="inst-item"><b>125 años</b><span data-es="Las Condes, vuelve a ti" data-en="Las Condes, 125 years">Las Condes, vuelve a ti</span></div>
+    </div>
+
+    <div class="legal">
+      <p data-es="Institución auditada de acuerdo a resolución exenta N°1830, del año 2013 del Ministerio de Justicia y Derechos Humanos." data-en="Institution audited under exempt resolution N°1830, 2013, Ministry of Justice and Human Rights.">Institución auditada de acuerdo a resolución exenta N°1830, del año 2013 del Ministerio de Justicia y Derechos Humanos.</p>
+      <p>Propuesta de rediseño · Anothen · 2026</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Barra fija móvil: el CTA nunca queda fuera de alcance -->
+<div class="mbar" id="mbar">
+  <span class="m-price">
+    <b>$7.000 <span style="color:var(--ink-faint);font-weight:300">general</span></b>
+    <span data-es="50 min · 65 personas por función" data-en="50 min · 65 people per session">50 min · 65 personas por función</span>
+  </span>
+  <a href="#visita" class="btn" data-es="Comprar" data-en="Buy">Comprar</a>
+</div>
+
+<style>
+/* Grano global — evita que los negros y degradados se vean plásticos */
+body::after{
+  content:""; position:fixed; inset:0; z-index:150; pointer-events:none;
+  opacity:.038;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+</style>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ─────────── Campo bioluminiscente del hero ───────────
+     Se dibuja en un lienzo diminuto (1/4) y se escala con blur:
+     cuesta casi nada y se ve como un degradado de malla animado. */
+  var cv = document.getElementById("field");
+  if (cv && cv.getContext) {
+    var ctx = cv.getContext("2d");
+    var SC = 0.22;
+    cv.style.filter = "blur(26px)";
+    cv.style.transform = "scale(1.25)";
+
+    var blobs = [
+      { c:[63,224,200],  x:.20, y:.30, r:.55, sx:.00021, sy:.00013, a:.44 },
+      { c:[155,107,255], x:.72, y:.22, r:.62, sx:-.00016, sy:.00019, a:.40 },
+      { c:[255,106,77],  x:.58, y:.78, r:.48, sx:.00013, sy:-.00017, a:.32 },
+      { c:[255,196,107], x:.88, y:.62, r:.34, sx:-.00022, sy:-.00011, a:.24 },
+      { c:[63,224,200],  x:.06, y:.85, r:.40, sx:.00018, sy:-.00014, a:.26 }
+    ];
+
+    function size(){
+      cv.width  = Math.max(2, Math.round(cv.offsetWidth  * SC));
+      cv.height = Math.max(2, Math.round(cv.offsetHeight * SC));
+    }
+
+    function draw(t){
+      var w = cv.width, h = cv.height;
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "#05070A";
+      ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = "lighter";
+
+      for (var i = 0; i < blobs.length; i++) {
+        var b = blobs[i];
+        var x = (b.x + Math.sin(t * b.sx + i) * .10) * w;
+        var y = (b.y + Math.cos(t * b.sy + i * 1.7) * .09) * h;
+        var r = b.r * Math.max(w, h) * (0.9 + Math.sin(t * .00009 + i) * .12);
+        var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0,   "rgba(" + b.c + "," + b.a + ")");
+        g.addColorStop(.55, "rgba(" + b.c + "," + (b.a * .28) + ")");
+        g.addColorStop(1,   "rgba(" + b.c + ",0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, 6.2832);
+        ctx.fill();
+      }
+    }
+
+    var raf;
+    function loop(t){ draw(t); raf = requestAnimationFrame(loop); }
+
+    size(); 
+    if (reduce) { draw(0); } else { raf = requestAnimationFrame(loop); }
+
+    var rt;
+    addEventListener("resize", function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){ size(); if (reduce) draw(0); }, 160);
+    });
+
+    // No gastar batería cuando el hero no está en pantalla
+    if ("IntersectionObserver" in window && !reduce) {
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if (e.isIntersecting && !raf) { raf = requestAnimationFrame(loop); }
+          else if (!e.isIntersecting && raf) { cancelAnimationFrame(raf); raf = null; }
+        });
+      }, { threshold: 0 }).observe(cv);
+    }
+  }
+
+  /* ─────────── Nav sólido + barra móvil ─────────── */
+  var nav = document.getElementById("nav"),
+      mbar = document.getElementById("mbar"),
+      last = 0;
+
+  function onScroll(){
+    var y = scrollY;
+    nav.classList.toggle("solid", y > 40);
+    if (mbar) mbar.classList.toggle("up", y > innerHeight * .7);
+    last = y;
+  }
+  addEventListener("scroll", onScroll, { passive:true });
+  onScroll();
+
+  /* ─────────── Menú móvil ─────────── */
+  var burger = document.getElementById("burger"),
+      drawer = document.getElementById("drawer");
+
+  if (burger && drawer) {
+    burger.addEventListener("click", function(){
+      var open = burger.getAttribute("aria-expanded") === "true";
+      burger.setAttribute("aria-expanded", String(!open));
+      drawer.classList.toggle("open", !open);
+      document.body.style.overflow = open ? "" : "hidden";
+    });
+    drawer.addEventListener("click", function(e){
+      if (e.target.closest("a")) {
+        burger.setAttribute("aria-expanded", "false");
+        drawer.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+    });
+    addEventListener("keydown", function(e){
+      if (e.key === "Escape" && drawer.classList.contains("open")) burger.click();
+    });
+  }
+
+  /* ─────────── Revelado en scroll ─────────── */
+  var rvs = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold:.12, rootMargin:"0px 0px -8% 0px" });
+    rvs.forEach(function(el){ io.observe(el); });
+  } else {
+    rvs.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* ─────────── Contadores ─────────── */
+  var nums = document.querySelectorAll(".n[data-count]");
+  function runCount(el){
+    var target = parseInt(el.dataset.count, 10),
+        u = el.querySelector("u"),
+        suffix = u ? u.outerHTML : "",
+        dur = reduce ? 0 : 1100,
+        t0 = null;
+
+    function frame(ts){
+      if (!t0) t0 = ts;
+      var p = dur ? Math.min(1, (ts - t0) / dur) : 1;
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.innerHTML = Math.round(target * eased).toLocaleString("es-CL") + suffix;
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  if ("IntersectionObserver" in window) {
+    var io2 = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting) { runCount(e.target); io2.unobserve(e.target); }
+      });
+    }, { threshold:.5 });
+    nums.forEach(function(el){ io2.observe(el); });
+  } else {
+    nums.forEach(runCount);
+  }
+
+  /* ─────────── Idioma ───────────
+     Sustituye sólo el primer nodo de texto, para no destruir
+     los elementos hijos (spans, enlaces) del elemento. */
+  function setText(el, txt){
+    for (var i = 0; i < el.childNodes.length; i++) {
+      var n = el.childNodes[i];
+      if (n.nodeType === 3 && n.textContent.trim()) {
+        // conservar los espacios de alrededor para no pegar el texto al hijo siguiente
+        n.textContent = n.textContent.match(/^\s*/)[0] + txt + n.textContent.match(/\s*$/)[0];
+        return;
+      }
+    }
+    el.textContent = txt;
+  }
+
+  var i18n = document.querySelectorAll("[data-es][data-en]");
+  document.querySelectorAll(".lang button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var lang = btn.dataset.lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll(".lang button").forEach(function(b){
+        b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+      });
+      i18n.forEach(function(el){ setText(el, el.dataset[lang]); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
