@@ -159,32 +159,32 @@
         /* Capas en decenas: deja hueco para insertar elementos entre ellas
            (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.png?v=20260817-4');
+            background-image: url('./Images/parallax/slide-01.png?v=20260817-5');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 10;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.png?v=20260817-4');
+            background-image: url('./Images/parallax/slide-02.png?v=20260817-5');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 20;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.png?v=20260817-4');
+            background-image: url('./Images/parallax/slide-03.png?v=20260817-5');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.png?v=20260817-4');
+            background-image: url('./Images/parallax/slide-04.png?v=20260817-5');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 40;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.png?v=20260817-4');
+            background-image: url('./Images/parallax/slide-05.png?v=20260817-5');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 50;
         }
@@ -255,14 +255,6 @@
             font-weight: 400;
             margin-bottom: 0.3rem;
             text-transform: uppercase;
-        }
-
-        .logo-subtitle {
-            font-size: 0.9rem;
-            letter-spacing: 0.12em;
-            font-weight: 500;
-            opacity: 0.85;
-            margin-top: 0.2rem;
         }
 
         /* Content wrapper - deprecated, use content-section instead */
@@ -567,11 +559,6 @@
                 font-size: 1.4rem;
             }
 
-            .logo-subtitle {
-                font-size: 0.6rem;
-                margin-top: 0.2rem;
-            }
-
             .content-wrapper {
                 gap: 1.2rem;
                 margin-top: 1.5rem;
@@ -597,7 +584,7 @@
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/parallax/slide-03-movil.png?v=20260817-4');
+                background-image: url('./Images/parallax/slide-03-movil.png?v=20260817-5');
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -648,11 +635,6 @@
             .logo-text {
                 font-size: 1.1rem;
                 letter-spacing: 0.1em;
-            }
-
-            .logo-subtitle {
-                font-size: 0.6rem;
-                margin-top: 0.2rem;
             }
 
             .content-wrapper {
@@ -713,8 +695,7 @@
         <!-- TOP SECTION: Logo, Separator, Description -->
         <div class="content-section top">
             <div class="logo-area" id="logo">
-                <img src="./Images/Anothen-logo.svg?v=20260817-4" alt="Anothen" class="logo" style="height: 124px; width: auto; display: block; margin: 0 auto 0.5rem;">
-                <div class="logo-subtitle">Nacidos de lo alto.</div>
+                <img src="./Images/Anothen-logo.svg?v=20260817-5" alt="Anothen" class="logo" style="height: 124px; width: auto; display: block; margin: 0 auto;">
             </div>
 
             <p class="description">
@@ -742,7 +723,7 @@
             </div>
 
             <p class="subscription-hint">
-                Síguelo de cerca. Sé el primero en saber cuándo llegamos.
+                Síguenos de cerca. Sé el primero en saber cuándo llegamos.
             </p>
         </div>
     </div>
@@ -755,7 +736,7 @@
             blurImg.onload = function() {
                 const overlay = document.getElementById('blurred-overlay');
                 if (overlay) {
-                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817-4')";
+                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817-5')";
                     overlay.style.backgroundSize = "cover";
                     overlay.style.backgroundPosition = "center";
                 }
@@ -764,19 +745,19 @@
             blurImg.onerror = function() {
                 console.log('Blurred image not found');
             };
-            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817-4';
+            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817-5';
 
             // Load sharp image for body::before (fondo enfocado)
             const sharpImg = new Image();
             sharpImg.onload = function() {
                 const style = document.createElement('style');
-                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817-4') !important; }`;
+                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817-5') !important; }`;
                 document.head.appendChild(style);
             };
             sharpImg.onerror = function() {
                 console.log('Sharp background image not found');
             };
-            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817-4';
+            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817-5';
         });
 
         // Create floating particles
