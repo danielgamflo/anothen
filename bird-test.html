@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bird Test — Silueta de ave</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(180deg, #eceade 0%, #e2e2d6 55%, #d5d8ca 100%);
+        font-family: 'Outfit', system-ui, sans-serif;
+    }
+
+    canvas { display: block; position: fixed; inset: 0; }
+
+    .panel {
+        position: fixed;
+        top: 16px; left: 16px;
+        z-index: 10;
+        min-width: 230px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.68);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        color: #3a3a30;
+        font-size: 12px;
+        letter-spacing: -0.01em;
+    }
+
+    .panel h1 {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        opacity: 0.5;
+        margin-bottom: 10px;
+    }
+
+    .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+    }
+    .row label { flex: 0 0 62px; }
+    .row input { flex: 1; accent-color: #897c4b; }
+    .row output {
+        flex: 0 0 30px;
+        text-align: right;
+        opacity: 0.6;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .hint { margin-top: 12px; opacity: 0.45; font-size: 11px; }
+</style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+
+    <div class="panel">
+        <h1>Silueta de ave</h1>
+        <div class="row"><label>Cantidad</label><input id="count" type="range" min="4" max="50" value="16"><output id="countV">16</output></div>
+        <div class="row"><label>Tamaño</label><input id="size" type="range" min="4" max="24" value="10"><output id="sizeV">10</output></div>
+        <div class="row"><label>Velocidad</label><input id="speed" type="range" min="1" max="20" value="6"><output id="speedV">6</output></div>
+        <div class="row"><label>Aleteo</label><input id="flap" type="range" min="1" max="20" value="7"><output id="flapV">7</output></div>
+        <p class="hint">Mueve el mouse para espantarlos.</p>
+    </div>
+
+<script>
+    const cv = document.getElementById('c');
+    const ctx = cv.getContext('2d');
+
+    let W, H;
+    function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        cv.width = W * dpr;
+        cv.height = H * dpr;
+        cv.style.width = W + 'px';
+        cv.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Parámetros ajustables en vivo
+    const P = { count: 16, size: 10, speed: 6, flap: 7 };
+
+    const mouse = { x: -9999, y: -9999 };
+    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    document.addEventListener('touchmove', e => {
+        if (e.touches.length) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+    });
+
+    let birds = [];
+
+    // Rango de profundidad: define tanto el tamaño como el color de cada ave
+    const DEPTH_MIN = 0.55;                          // más lejana: pequeña y clara
+    const DEPTH_MAX = 1.30;                          // más cercana: grande y oscura
+
+    const COLOR_FAR = [0x7a, 0x7d, 0x6d];            // #7a7d6d
+    const COLOR_NEAR = [0x40, 0x3e, 0x2c];           // #403e2c
+
+    // Perspectiva atmosférica: lo lejano pierde contraste contra el cielo
+    function depthColor(t) {
+        const c = COLOR_FAR.map((far, i) => Math.round(far + (COLOR_NEAR[i] - far) * t));
+        return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+
+    function makeBird(fromLeft) {
+        const depth = DEPTH_MIN + Math.random() * (DEPTH_MAX - DEPTH_MIN);
+        const t = (depth - DEPTH_MIN) / (DEPTH_MAX - DEPTH_MIN);
+        return {
+            x: fromLeft ? -40 : Math.random() * W,
+            y: Math.random() * H * 0.8,
+            vx: (0.5 + Math.random() * 0.4) * depth,
+            vy: (Math.random() - 0.5) * 0.25 * depth,
+            depth,
+            color: depthColor(t),
+            phase: Math.random() * Math.PI * 2,
+            flapRate: 0.7 + Math.random() * 0.6,      // cada ave aletea a su ritmo
+            wander: Math.random() * Math.PI * 2,
+            bank: 0,
+            gliding: Math.random() < 0.3,
+            flapAmp: 1,                               // se interpola hacia el planeo
+            glideTimer: 40 + Math.random() * 120
+        };
+    }
+
+    function rebuild() {
+        birds = [];
+        for (let i = 0; i < P.count; i++) birds.push(makeBird(false));
+        // Las lejanas se dibujan primero: las cercanas quedan por encima
+        birds.sort((a, b) => a.depth - b.depth);
+    }
+
+    // Silueta de ave: dos alas curvas que salen del cuerpo (forma "M" / gaviota)
+    function drawBird(b) {
+        // Onda de aleteo: seno puro (sin quiebres de pendiente). La asimetría
+        // del batido vive en la velocidad de fase, y la entrada/salida del
+        // planeo en flapAmp, que se interpola. Ver update().
+        const f = Math.sin(b.phase) * b.flapAmp;
+
+        const span = 17;                             // envergadura: alas largas
+        // Diedro base: aun planeando las alas mantienen una "V" suave
+        const tipY = -(3.2 + f * 6);                 // punta del ala
+        const wristY = -(0.8 + f * 2);               // codo del ala (crea la "M")
+
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.bank);
+        ctx.scale(b.depth * P.size / 10, b.depth * P.size / 10);
+        ctx.fillStyle = b.color;
+
+        ctx.beginPath();
+        // Borde de ataque: punta izq -> codo -> cuerpo -> codo -> punta der
+        ctx.moveTo(-span, tipY);
+        ctx.quadraticCurveTo(-span * 0.6, wristY - 0.9, 0, -1.1);
+        ctx.quadraticCurveTo(span * 0.6, wristY - 0.9, span, tipY);
+        // Borde de salida barrido hacia atrás: alas finas, cuerpo delgado
+        ctx.quadraticCurveTo(span * 0.44, wristY + 1.9, 0, 1.7);
+        ctx.quadraticCurveTo(-span * 0.44, wristY + 1.9, -span, tipY);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    function update(b) {
+        // Parallax: el desplazamiento aparente cae con la distancia igual que
+        // el tamaño, así que ambos escalan con el mismo factor (depth).
+        const cruise = (P.speed / 10) * b.depth;
+
+        // Deriva vertical suave
+        b.wander += 0.008;
+        b.vy += Math.sin(b.wander) * 0.005 * b.depth;
+
+        // Huir del mouse: las lejanas se inmutan menos
+        const dx = b.x - mouse.x;
+        const dy = b.y - mouse.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 130 && dist > 0) {
+            const force = (130 - dist) / 130 * 0.22 * b.depth;
+            b.vx += (dx / dist) * force;
+            b.vy += (dy / dist) * force;
+            b.gliding = false;
+        }
+
+        // Volver a velocidad crucero (izquierda -> derecha)
+        b.vx += (cruise - b.vx) * 0.012;
+        b.vy *= 0.985;
+        b.vy = Math.max(-1.4 * b.depth, Math.min(1.4 * b.depth, b.vy));
+        b.vx = Math.max(0.1, Math.min(3.5 * b.depth, b.vx));
+
+        b.x += b.vx;
+        b.y += b.vy;
+
+        // Inclinación según el ascenso/descenso
+        b.bank += (b.vy * 0.13 - b.bank) * 0.08;
+
+        // Alternar planeo / aleteo
+        b.glideTimer -= 1;
+        if (b.glideTimer <= 0) {
+            b.gliding = !b.gliding;
+            b.glideTimer = b.gliding ? 50 + Math.random() * 90 : 90 + Math.random() * 160;
+        }
+
+        // La amplitud entra y sale del planeo de forma gradual, nunca de golpe
+        const targetAmp = b.gliding ? 0.09 : 1;
+        b.flapAmp += (targetAmp - b.flapAmp) * 0.035;
+
+        // Batido asimétrico (bajada rápida, recuperación lenta) modulando la
+        // velocidad de fase: la onda sigue siendo un seno, así no hay tirones.
+        const climb = 1 + Math.max(0, -b.vy) * 0.3;
+        const stroke = 1 - 0.55 * Math.cos(b.phase);
+        const rate = (P.flap / 100) * b.flapRate * climb;
+        b.phase += rate * stroke * (0.25 + 0.75 * b.flapAmp);
+
+        // Reaparecer por la izquierda
+        if (b.x > W + 50) {
+            b.x = -50;
+            b.y = Math.random() * H * 0.8;
+        }
+        if (b.y < -50) b.y = H + 50;
+        if (b.y > H + 50) b.y = -50;
+    }
+
+    function frame() {
+        ctx.clearRect(0, 0, W, H);
+        for (const b of birds) { update(b); drawBird(b); }
+        requestAnimationFrame(frame);
+    }
+
+    // Controles
+    [['count', v => { P.count = v; rebuild(); }],
+     ['size', v => P.size = v],
+     ['speed', v => P.speed = v],
+     ['flap', v => P.flap = v]].forEach(([id, apply]) => {
+        const input = document.getElementById(id);
+        const out = document.getElementById(id + 'V');
+        input.addEventListener('input', () => {
+            const v = Number(input.value);
+            out.textContent = v;
+            apply(v);
+        });
+    });
+
+    rebuild();
+    frame();
+</script>
+</body>
+</html>

@@ -156,35 +156,37 @@
             background-attachment: fixed;
         }
 
+        /* Capas en decenas: deja hueco para insertar elementos entre ellas
+           (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
             background-image: url('./Images/parallax/slide-01.png?v=20260819');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            z-index: 1;
+            z-index: 10;
         }
 
         .parallax-layer-02 {
             background-image: url('./Images/parallax/slide-02.png?v=20260819');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            z-index: 2;
+            z-index: 20;
         }
 
         .parallax-layer-03 {
             background-image: url('./Images/parallax/slide-03.png?v=20260819');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
-            z-index: 3;
+            z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
             background-image: url('./Images/parallax/slide-04.png?v=20260819');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            z-index: 4;
+            z-index: 40;
         }
 
         .parallax-layer-05 {
             background-image: url('./Images/parallax/slide-05.png?v=20260819');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            z-index: 5;
+            z-index: 50;
         }
 
         /* Main container */
@@ -197,7 +199,7 @@
             min-height: 100vh;
             padding: 2rem;
             position: relative;
-            z-index: 10;
+            z-index: 100;
             box-sizing: border-box;
         }
 
@@ -528,7 +530,7 @@
         .particle {
             position: fixed;
             pointer-events: none;
-            z-index: 6;
+            z-index: 60;
         }
 
         .particle::before {
@@ -550,20 +552,15 @@
             }
         }
 
-        /* 3D Birds Canvas */
+        /* Aves: vuelan entre slide-02 y slide-03, así el bosque las tapa */
         #birds-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 6;
-            pointer-events: auto;
-        }
-
-        /* Hide old SVG birds - kept for compatibility */
-        .bird {
-            display: none !important;
+            z-index: 25;
+            pointer-events: none;
         }
 
         /* Subscription hint */
@@ -736,7 +733,7 @@
     <canvas id="birds-canvas"></canvas>
 
     <div id="particles-container"></div>
-    <button id="sound-hint" style="position: fixed; top: 1rem; right: 1rem; width: 48px; height: 48px; border: none; background: none; cursor: pointer; z-index: 15; opacity: 0; animation: fadeInUp 0.8s ease-out 3.0s both; padding: 0; display: flex; align-items: center; justify-content: center;">
+    <button id="sound-hint" style="position: fixed; top: 1rem; right: 1rem; width: 48px; height: 48px; border: none; background: none; cursor: pointer; z-index: 110; opacity: 0; animation: fadeInUp 0.8s ease-out 3.0s both; padding: 0; display: flex; align-items: center; justify-content: center;">
         <svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="#d3d4ba" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <!-- Speaker cone -->
             <path d="M 3 9 L 7 9 L 12 4 L 12 20 L 7 15 L 3 15 Z"></path>
@@ -1040,26 +1037,159 @@
         }, { passive: false });
     </script>
 
-    <!-- Three.js via npm -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "./node_modules/three/build/three.module.js"
-        }
-    }
-    </script>
+    <!-- Aves en vuelo (canvas 2D, sin dependencias) -->
+    <script>
+        (function () {
+            const cv = document.getElementById('birds-canvas');
+            if (!cv) return;
+            const ctx = cv.getContext('2d');
 
-    <script type="module">
-        import { BirdsSystem } from './birds.js';
-
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                new BirdsSystem();
-                console.log('Birds initialized successfully');
-            } catch (error) {
-                console.error('Failed to initialize birds:', error);
+            let W, H;
+            function resize() {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                W = window.innerWidth;
+                H = window.innerHeight;
+                cv.width = W * dpr;
+                cv.height = H * dpr;
+                cv.style.width = W + 'px';
+                cv.style.height = H + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
-        });
+            resize();
+            window.addEventListener('resize', resize);
+
+            const COUNT = window.innerWidth <= 768 ? 10 : 16;
+            const SIZE = 10;
+            const SPEED = 6;
+            const FLAP = 7;
+
+            // Profundidad: un solo valor gobierna tamaño, color y velocidad
+            const DEPTH_MIN = 0.55;                  // lejana: pequeña, clara, lenta
+            const DEPTH_MAX = 1.30;                  // cercana: grande, oscura, rápida
+            const COLOR_FAR = [0x7a, 0x7d, 0x6d];    // #7a7d6d
+            const COLOR_NEAR = [0x40, 0x3e, 0x2c];   // #403e2c
+
+            const mouse = { x: -9999, y: -9999 };
+            document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+            document.addEventListener('touchmove', e => {
+                if (e.touches.length) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+            }, { passive: true });
+
+            function depthColor(t) {
+                const c = COLOR_FAR.map((far, i) => Math.round(far + (COLOR_NEAR[i] - far) * t));
+                return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+            }
+
+            function makeBird() {
+                const depth = DEPTH_MIN + Math.random() * (DEPTH_MAX - DEPTH_MIN);
+                const t = (depth - DEPTH_MIN) / (DEPTH_MAX - DEPTH_MIN);
+                return {
+                    x: Math.random() * W,
+                    y: Math.random() * H * 0.7,
+                    vx: (0.5 + Math.random() * 0.4) * depth,
+                    vy: (Math.random() - 0.5) * 0.25 * depth,
+                    depth: depth,
+                    color: depthColor(t),
+                    phase: Math.random() * Math.PI * 2,
+                    flapRate: 0.7 + Math.random() * 0.6,
+                    wander: Math.random() * Math.PI * 2,
+                    bank: 0,
+                    gliding: Math.random() < 0.3,
+                    flapAmp: 1,
+                    glideTimer: 40 + Math.random() * 120
+                };
+            }
+
+            const birds = [];
+            for (let i = 0; i < COUNT; i++) birds.push(makeBird());
+            // Las lejanas se dibujan primero: las cercanas quedan por encima
+            birds.sort(function (a, b) { return a.depth - b.depth; });
+
+            function drawBird(b) {
+                // Onda de aleteo: seno puro. La asimetría del batido vive en la
+                // velocidad de fase y la entrada al planeo en flapAmp, ambas
+                // continuas, para que no haya saltos entre ciclos.
+                const f = Math.sin(b.phase) * b.flapAmp;
+
+                const span = 17;                     // envergadura: alas largas
+                const tipY = -(3.2 + f * 6);         // punta del ala
+                const wristY = -(0.8 + f * 2);       // codo del ala (crea la "M")
+
+                ctx.save();
+                ctx.translate(b.x, b.y);
+                ctx.rotate(b.bank);
+                ctx.scale(b.depth * SIZE / 10, b.depth * SIZE / 10);
+                ctx.fillStyle = b.color;
+
+                ctx.beginPath();
+                ctx.moveTo(-span, tipY);
+                ctx.quadraticCurveTo(-span * 0.6, wristY - 0.9, 0, -1.1);
+                ctx.quadraticCurveTo(span * 0.6, wristY - 0.9, span, tipY);
+                ctx.quadraticCurveTo(span * 0.44, wristY + 1.9, 0, 1.7);
+                ctx.quadraticCurveTo(-span * 0.44, wristY + 1.9, -span, tipY);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            function update(b) {
+                // Parallax: el desplazamiento aparente cae con la distancia
+                // igual que el tamaño, así que ambos escalan con depth.
+                const cruise = (SPEED / 10) * b.depth;
+
+                b.wander += 0.008;
+                b.vy += Math.sin(b.wander) * 0.005 * b.depth;
+
+                // Huir del cursor: las lejanas se inmutan menos
+                const dx = b.x - mouse.x;
+                const dy = b.y - mouse.y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < 130 && dist > 0) {
+                    const force = (130 - dist) / 130 * 0.22 * b.depth;
+                    b.vx += (dx / dist) * force;
+                    b.vy += (dy / dist) * force;
+                    b.gliding = false;
+                }
+
+                b.vx += (cruise - b.vx) * 0.012;
+                b.vy *= 0.985;
+                b.vy = Math.max(-1.4 * b.depth, Math.min(1.4 * b.depth, b.vy));
+                b.vx = Math.max(0.1, Math.min(3.5 * b.depth, b.vx));
+
+                b.x += b.vx;
+                b.y += b.vy;
+                b.bank += (b.vy * 0.13 - b.bank) * 0.08;
+
+                b.glideTimer -= 1;
+                if (b.glideTimer <= 0) {
+                    b.gliding = !b.gliding;
+                    b.glideTimer = b.gliding ? 50 + Math.random() * 90 : 90 + Math.random() * 160;
+                }
+
+                // La amplitud entra y sale del planeo de forma gradual
+                b.flapAmp += ((b.gliding ? 0.09 : 1) - b.flapAmp) * 0.035;
+
+                // Batido asimétrico modulando la velocidad de fase
+                const climb = 1 + Math.max(0, -b.vy) * 0.3;
+                const stroke = 1 - 0.55 * Math.cos(b.phase);
+                b.phase += (FLAP / 100) * b.flapRate * climb * stroke * (0.25 + 0.75 * b.flapAmp);
+
+                if (b.x > W + 50) { b.x = -50; b.y = Math.random() * H * 0.7; }
+                if (b.y < -50) b.y = H + 50;
+                if (b.y > H + 50) b.y = -50;
+            }
+
+            function frame() {
+                ctx.clearRect(0, 0, W, H);
+                for (let i = 0; i < birds.length; i++) {
+                    update(birds[i]);
+                    drawBird(birds[i]);
+                }
+                requestAnimationFrame(frame);
+            }
+            frame();
+        })();
     </script>
 </body>
 </html>
