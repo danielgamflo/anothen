@@ -62,44 +62,6 @@
             --px-pad: 2rem;
         }
 
-        /* Background with subtle overlay - BLURRED version by default */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.2) 100%);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            z-index: -2;
-            animation: subtleZoom 20s ease-in-out infinite;
-            opacity: 0;
-            transition: opacity 0.5s ease-in 0.3s;
-        }
-
-        body.image-loaded::before {
-            opacity: 1;
-        }
-
-
-        @media (prefers-reduced-motion: reduce) {
-            body::before {
-                animation: none;
-            }
-        }
-
-        @keyframes subtleZoom {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.02);
-            }
-        }
-
         /* Parallax zoom out animation - slide 01 */
         @keyframes parallaxZoomOut {
             0% {
@@ -188,32 +150,32 @@
         /* Capas en decenas: deja hueco para insertar elementos entre ellas
            (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.webp?v=20260817-8');
+            background-image: url('./Images/parallax/slide-01.webp?v=20260817-9');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 10;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.webp?v=20260817-8');
+            background-image: url('./Images/parallax/slide-02.webp?v=20260817-9');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 20;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.webp?v=20260817-8');
+            background-image: url('./Images/parallax/slide-03.webp?v=20260817-9');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.webp?v=20260817-8');
+            background-image: url('./Images/parallax/slide-04.webp?v=20260817-9');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 40;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.webp?v=20260817-8');
+            background-image: url('./Images/parallax/slide-05.webp?v=20260817-9');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 50;
         }
@@ -659,7 +621,7 @@
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/parallax/slide-03-movil.webp?v=20260817-8');
+                background-image: url('./Images/parallax/slide-03-movil.webp?v=20260817-9');
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -819,7 +781,7 @@
         <!-- TOP SECTION: Logo, Separator, Description -->
         <div class="content-section top">
             <div class="logo-area" id="logo">
-                <img src="./Images/Anothen-logo.svg?v=20260817-8" alt="Anothen" class="logo">
+                <img src="./Images/Anothen-logo.svg?v=20260817-9" alt="Anothen" class="logo">
             </div>
 
             <p class="description">
@@ -853,37 +815,6 @@
     </div>
 
     <script>
-        // Load background images dynamically
-        window.addEventListener('DOMContentLoaded', function() {
-            // Load blurred image for overlay (revela blur en spotlight)
-            const blurImg = new Image();
-            blurImg.onload = function() {
-                const overlay = document.getElementById('blurred-overlay');
-                if (overlay) {
-                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817-8')";
-                    overlay.style.backgroundSize = "cover";
-                    overlay.style.backgroundPosition = "center";
-                }
-                document.body.classList.add('image-loaded');
-            };
-            blurImg.onerror = function() {
-                console.log('Blurred image not found');
-            };
-            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817-8';
-
-            // Load sharp image for body::before (fondo enfocado)
-            const sharpImg = new Image();
-            sharpImg.onload = function() {
-                const style = document.createElement('style');
-                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817-8') !important; }`;
-                document.head.appendChild(style);
-            };
-            sharpImg.onerror = function() {
-                console.log('Sharp background image not found');
-            };
-            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817-8';
-        });
-
         // Create floating particles
         function createParticles() {
             const container = document.getElementById('particles-container');
