@@ -564,23 +564,18 @@
 
         /* Responsive design */
         @media (max-width: 768px) {
-            /* Movil usa otra imagen (1234x703, texto 1162x627 con su base a
-               51px del fondo) y ademas la pinta con background-size: contain:
-               la imagen se ve entera y centrada, sin recorte. La escala la
-               manda el lado que falta, y sobra espacio en el otro eje. */
+            /* En movil el "PROXIMAMENTE" es un SVG que contiene solo la
+               palabra, sin margenes alrededor. Eso permite declarar su tamano
+               y su posicion directamente, en vez de deducirlos del encuadre de
+               una imagen: la banda reservada sale de estos dos valores y no
+               hace falta replicar la matematica de contain.
+               Los numeros reproducen lo que se veia con el PNG: 94.2vw de
+               ancho y la base a 38.75vh del fondo. */
             :root {
-                --px-img-w: 1234;
-                --px-img-h: 703;
-                --px-txt-alto: 627;
-                --px-txt-base: 51;
-
-                /* contain: gana la escala menor */
-                --px-escala: min(calc(100vw / var(--px-img-w)), calc(100vh / var(--px-img-h)));
-                /* la imagen va centrada, asi que abajo queda media banda libre */
-                --px-margen: calc((100vh - var(--px-escala) * var(--px-img-h)) / 2);
-
-                --px-alto: calc(var(--px-escala) * var(--px-txt-alto));
-                --px-base: calc(var(--px-margen) + var(--px-escala) * var(--px-txt-base));
+                --px-svg-ratio: 1.8695;          /* 1040.52 / 556.57 */
+                --px-ancho: 94.2vw;
+                --px-alto: calc(var(--px-ancho) / var(--px-svg-ratio));
+                --px-base: 38.75vh;
             }
 
             .logo-area {
@@ -641,9 +636,9 @@
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/parallax/slide-03-movil.webp?v=20260818');
-                background-size: contain;
-                background-position: center;
+                background-image: url('./Images/proximamente-movil.svg?v=20260818');
+                background-size: var(--px-ancho) auto;
+                background-position: left 50% bottom var(--px-base);
                 background-repeat: no-repeat;
                 animation: slideUpZoomOutMobile 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             }
