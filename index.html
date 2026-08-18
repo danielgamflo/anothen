@@ -150,32 +150,32 @@
         /* Capas en decenas: deja hueco para insertar elementos entre ellas
            (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.webp?v=20260817-9');
+            background-image: url('./Images/parallax/slide-01.webp?v=20260818');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 10;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.webp?v=20260817-9');
+            background-image: url('./Images/parallax/slide-02.webp?v=20260818');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 20;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.webp?v=20260817-9');
+            background-image: url('./Images/parallax/slide-03.webp?v=20260818');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.webp?v=20260817-9');
+            background-image: url('./Images/parallax/slide-04.webp?v=20260818');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 40;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.webp?v=20260817-9');
+            background-image: url('./Images/parallax/slide-05.webp?v=20260818');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 50;
         }
@@ -620,8 +620,28 @@
                 display: inline;
             }
 
+            /* Capas a 1280px en vez de 2560px: cubre hasta un iPhone de 430pt
+               con densidad x3 (1290px reales) y ahorra un 79% de descarga.
+               Solo cambia el archivo; el encuadre y las animaciones siguen
+               definidos arriba. */
+            .parallax-layer-01 {
+                background-image: url('./Images/parallax/slide-01-movil.webp?v=20260818');
+            }
+
+            .parallax-layer-02 {
+                background-image: url('./Images/parallax/slide-02-movil.webp?v=20260818');
+            }
+
+            .parallax-layer-04 {
+                background-image: url('./Images/parallax/slide-04-movil.webp?v=20260818');
+            }
+
+            .parallax-layer-05 {
+                background-image: url('./Images/parallax/slide-05-movil.webp?v=20260818');
+            }
+
             .parallax-layer-03 {
-                background-image: url('./Images/parallax/slide-03-movil.webp?v=20260817-9');
+                background-image: url('./Images/parallax/slide-03-movil.webp?v=20260818');
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -781,7 +801,7 @@
         <!-- TOP SECTION: Logo, Separator, Description -->
         <div class="content-section top">
             <div class="logo-area" id="logo">
-                <img src="./Images/Anothen-logo.svg?v=20260817-9" alt="Anothen" class="logo">
+                <img src="./Images/Anothen-logo.svg?v=20260818" alt="Anothen" class="logo">
             </div>
 
             <p class="description">
