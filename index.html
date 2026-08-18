@@ -33,6 +33,35 @@
             --fade-radius: 60px;
         }
 
+        /* ---- Geometria del "PROXIMAMENTE" (slide-03) ----
+           Medido sobre el PNG: canvas 2560x1440, el texto ocupa 2186x649 y su
+           base queda a 365px del fondo. El alto incluye la tilde de la O, que
+           sobresale por encima de las mayusculas y tambien hay que respetar.
+
+           La capa se pinta con background-size: cover, asi que la imagen se
+           escala por el lado que sobra y se recorta el otro. Estas variables
+           reproducen ese mismo calculo, de modo que --px-alto y --px-base
+           dicen siempre donde cae la banda del texto dentro del viewport,
+           sea cual sea la proporcion de la pantalla. */
+        :root {
+            --px-img-w: 2560;
+            --px-img-h: 1440;
+            --px-txt-alto: 649;
+            --px-txt-base: 365;
+
+            /* cover: gana la escala mayor */
+            --px-escala: max(calc(100vw / var(--px-img-w)), calc(100vh / var(--px-img-h)));
+            --px-recorte: calc((var(--px-escala) * var(--px-img-h) - 100vh) / 2);
+
+            /* Banda del texto, en coordenadas del viewport */
+            --px-alto: calc(var(--px-escala) * var(--px-txt-alto));
+            --px-base: calc(var(--px-escala) * var(--px-txt-base) - var(--px-recorte));
+
+            /* padding-bottom del contenedor: la reserva de abajo lo descuenta,
+               asi que ambos valores tienen que salir de aqui */
+            --px-pad: 2rem;
+        }
+
         /* Background with subtle overlay - BLURRED version by default */
         body::before {
             content: '';
@@ -159,32 +188,32 @@
         /* Capas en decenas: deja hueco para insertar elementos entre ellas
            (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.png?v=20260817-6');
+            background-image: url('./Images/parallax/slide-01.png?v=20260817-7');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 10;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.png?v=20260817-6');
+            background-image: url('./Images/parallax/slide-02.png?v=20260817-7');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 20;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.png?v=20260817-6');
+            background-image: url('./Images/parallax/slide-03.png?v=20260817-7');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.png?v=20260817-6');
+            background-image: url('./Images/parallax/slide-04.png?v=20260817-7');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 40;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.png?v=20260817-6');
+            background-image: url('./Images/parallax/slide-05.png?v=20260817-7');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 50;
         }
@@ -194,10 +223,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            /* El reparto lo hace el margin-top: auto del spacer, que ancla la
+               banda del texto a su posicion real (ver .content-section.middle) */
+            justify-content: flex-start;
             width: 100%;
             min-height: 100vh;
-            padding: 2rem;
+            padding: 2rem 2rem var(--px-pad);
             position: relative;
             z-index: 100;
             box-sizing: border-box;
@@ -216,13 +247,28 @@
             flex: 0 0 auto;
         }
 
+        /* Spacer: reserva exactamente la banda que ocupa el "PROXIMAMENTE" de
+           la imagen de fondo. El margin-top: auto manda todo el espacio
+           sobrante hacia arriba, de modo que esta banda y el bloque inferior
+           quedan anclados al fondo, igual que el texto de la imagen. */
         .content-section.middle {
-            flex: 1 1 auto;
+            /* shrink 1 + min-height 0: si en algun tamano extremo el contenido
+               no cabe, cede esta banda antes que desbordar la pantalla */
+            flex: 0 1 auto;
+            height: var(--px-alto);
+            min-height: 0;
+            margin-top: auto;
         }
 
+        /* Ocupa desde la base del texto hasta el fondo del viewport, menos el
+           padding del contenedor. El contenido se centra en esa franja: en
+           pantallas muy anchas (21:9) el recorte de cover deja poco margen
+           bajo el texto, y con padding fijo el formulario no cabria y
+           desplazaria toda la columna hacia arriba. */
         .content-section.bottom {
             flex: 0 0 auto;
-            margin-bottom: 5rem;
+            height: calc(var(--px-base) - var(--px-pad));
+            justify-content: center;
         }
 
         /* Logo area */
@@ -556,6 +602,25 @@
 
         /* Responsive design */
         @media (max-width: 768px) {
+            /* Movil usa otra imagen (1234x703, texto 1162x627 con su base a
+               51px del fondo) y ademas la pinta con background-size: contain:
+               la imagen se ve entera y centrada, sin recorte. La escala la
+               manda el lado que falta, y sobra espacio en el otro eje. */
+            :root {
+                --px-img-w: 1234;
+                --px-img-h: 703;
+                --px-txt-alto: 627;
+                --px-txt-base: 51;
+
+                /* contain: gana la escala menor */
+                --px-escala: min(calc(100vw / var(--px-img-w)), calc(100vh / var(--px-img-h)));
+                /* la imagen va centrada, asi que abajo queda media banda libre */
+                --px-margen: calc((100vh - var(--px-escala) * var(--px-img-h)) / 2);
+
+                --px-alto: calc(var(--px-escala) * var(--px-txt-alto));
+                --px-base: calc(var(--px-margen) + var(--px-escala) * var(--px-txt-base));
+            }
+
             .logo-area {
                 top: 0.5rem;
             }
@@ -594,7 +659,7 @@
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/parallax/slide-03-movil.png?v=20260817-6');
+                background-image: url('./Images/parallax/slide-03-movil.png?v=20260817-7');
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -624,10 +689,13 @@
         }
 
         @media (max-width: 480px) {
+            :root {
+                --px-pad: 4rem;
+            }
+
             .container {
-                padding: 1.5rem;
+                padding: 1.5rem 1.5rem var(--px-pad);
                 height: 100dvh;
-                padding-bottom: 4rem;
             }
 
             .content-section {
@@ -689,38 +757,39 @@
            1920px el clamp devuelve exactamente el valor de siempre y no hay
            salto al cruzar el umbral. Por debajo de 1920px nada cambia. */
         @media (min-width: 1920px) {
+            /* El escalado usa min(vw, vh): asi el contenido solo crece cuando
+               crecen las dos dimensiones. Con vw a secas, una pantalla
+               ultrawide (2560x1080) agrandaba todo sin ganar alto, y sumado a
+               la banda reservada del "PROXIMAMENTE" el contenido ya no cabia.
+               Referencia 1920x1080, por eso vw/1920 y vh/1080. */
             .logo {
-                height: clamp(124px, 6.46vw, 248px);
+                height: clamp(124px, min(6.46vw, 11.48vh), 248px);
             }
 
             .description {
-                font-size: clamp(16px, 0.83vw, 32px);
+                font-size: clamp(16px, min(0.83vw, 1.48vh), 32px);
                 max-width: clamp(500px, 26vw, 1000px);
-                margin-top: clamp(2rem, 1.67vw, 4rem);
+                margin-top: clamp(2rem, min(1.67vw, 2.96vh), 4rem);
             }
 
             .subscription-form {
-                margin-top: clamp(1.5rem, 1.25vw, 3rem);
+                margin-top: clamp(1.5rem, min(1.25vw, 2.22vh), 3rem);
             }
 
             .subscription-form input {
-                font-size: clamp(14px, 0.73vw, 28px);
+                font-size: clamp(14px, min(0.73vw, 1.30vh), 28px);
                 min-width: clamp(300px, 15.6vw, 600px);
-                padding: clamp(1rem, 0.83vw, 2rem) clamp(1.5rem, 1.25vw, 3rem);
+                padding: clamp(1rem, min(0.83vw, 1.48vh), 2rem) clamp(1.5rem, 1.25vw, 3rem);
             }
 
             .subscription-form button {
-                font-size: clamp(13px, 0.68vw, 26px);
-                padding: clamp(1rem, 0.83vw, 2rem) clamp(2.5rem, 2.08vw, 5rem);
+                font-size: clamp(13px, min(0.68vw, 1.20vh), 26px);
+                padding: clamp(1rem, min(0.83vw, 1.48vh), 2rem) clamp(2.5rem, 2.08vw, 5rem);
             }
 
             .subscription-hint {
-                font-size: clamp(12px, 0.63vw, 24px);
-                margin-top: clamp(1rem, 0.83vw, 2rem);
-            }
-
-            .content-section.bottom {
-                margin-bottom: clamp(5rem, 4.17vw, 10rem);
+                font-size: clamp(12px, min(0.63vw, 1.11vh), 24px);
+                margin-top: clamp(1rem, min(0.83vw, 1.48vh), 2rem);
             }
         }
     </style>
@@ -750,7 +819,7 @@
         <!-- TOP SECTION: Logo, Separator, Description -->
         <div class="content-section top">
             <div class="logo-area" id="logo">
-                <img src="./Images/Anothen-logo.svg?v=20260817-6" alt="Anothen" class="logo">
+                <img src="./Images/Anothen-logo.svg?v=20260817-7" alt="Anothen" class="logo">
             </div>
 
             <p class="description">
@@ -791,7 +860,7 @@
             blurImg.onload = function() {
                 const overlay = document.getElementById('blurred-overlay');
                 if (overlay) {
-                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817-6')";
+                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817-7')";
                     overlay.style.backgroundSize = "cover";
                     overlay.style.backgroundPosition = "center";
                 }
@@ -800,19 +869,19 @@
             blurImg.onerror = function() {
                 console.log('Blurred image not found');
             };
-            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817-6';
+            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817-7';
 
             // Load sharp image for body::before (fondo enfocado)
             const sharpImg = new Image();
             sharpImg.onload = function() {
                 const style = document.createElement('style');
-                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817-6') !important; }`;
+                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817-7') !important; }`;
                 document.head.appendChild(style);
             };
             sharpImg.onerror = function() {
                 console.log('Sharp background image not found');
             };
-            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817-6';
+            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817-7';
         });
 
         // Create floating particles
