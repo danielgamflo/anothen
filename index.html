@@ -159,32 +159,32 @@
         /* Capas en decenas: deja hueco para insertar elementos entre ellas
            (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.png?v=20260817-5');
+            background-image: url('./Images/parallax/slide-01.png?v=20260817-6');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 10;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.png?v=20260817-5');
+            background-image: url('./Images/parallax/slide-02.png?v=20260817-6');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 20;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.png?v=20260817-5');
+            background-image: url('./Images/parallax/slide-03.png?v=20260817-6');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.png?v=20260817-5');
+            background-image: url('./Images/parallax/slide-04.png?v=20260817-6');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 40;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.png?v=20260817-5');
+            background-image: url('./Images/parallax/slide-05.png?v=20260817-6');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 50;
         }
@@ -240,6 +240,16 @@
 
         .logo-area:hover {
             transform: scale(1.05) !important;
+        }
+
+        /* Altura fija: el SVG tiene otra proporcion que el PNG anterior, y de
+           este modo el bloque conserva la altura original. Crece en pantallas
+           grandes, ver el media query del final. */
+        .logo {
+            height: 124px;
+            width: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         .logo-icon {
@@ -584,7 +594,7 @@
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/parallax/slide-03-movil.png?v=20260817-5');
+                background-image: url('./Images/parallax/slide-03-movil.png?v=20260817-6');
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -668,6 +678,51 @@
                 letter-spacing: 0.1em;
             }
         }
+
+        /* ---- Pantallas grandes (iMac 24"/27", 4K, 5K) ----
+           El texto "PROXIMAMENTE" vive dentro de slide-03.png y las capas usan
+           background-size: cover, asi que el fondo crece con la pantalla. Si el
+           contenido mantiene medidas fijas, queda diminuto en proporcion: a
+           2560px el logo ocupaba apenas un 5% del ancho.
+
+           Cada vw esta calculado como (valor actual / 1920), de modo que a
+           1920px el clamp devuelve exactamente el valor de siempre y no hay
+           salto al cruzar el umbral. Por debajo de 1920px nada cambia. */
+        @media (min-width: 1920px) {
+            .logo {
+                height: clamp(124px, 6.46vw, 248px);
+            }
+
+            .description {
+                font-size: clamp(16px, 0.83vw, 32px);
+                max-width: clamp(500px, 26vw, 1000px);
+                margin-top: clamp(2rem, 1.67vw, 4rem);
+            }
+
+            .subscription-form {
+                margin-top: clamp(1.5rem, 1.25vw, 3rem);
+            }
+
+            .subscription-form input {
+                font-size: clamp(14px, 0.73vw, 28px);
+                min-width: clamp(300px, 15.6vw, 600px);
+                padding: clamp(1rem, 0.83vw, 2rem) clamp(1.5rem, 1.25vw, 3rem);
+            }
+
+            .subscription-form button {
+                font-size: clamp(13px, 0.68vw, 26px);
+                padding: clamp(1rem, 0.83vw, 2rem) clamp(2.5rem, 2.08vw, 5rem);
+            }
+
+            .subscription-hint {
+                font-size: clamp(12px, 0.63vw, 24px);
+                margin-top: clamp(1rem, 0.83vw, 2rem);
+            }
+
+            .content-section.bottom {
+                margin-bottom: clamp(5rem, 4.17vw, 10rem);
+            }
+        }
     </style>
 </head>
 <body>
@@ -695,7 +750,7 @@
         <!-- TOP SECTION: Logo, Separator, Description -->
         <div class="content-section top">
             <div class="logo-area" id="logo">
-                <img src="./Images/Anothen-logo.svg?v=20260817-5" alt="Anothen" class="logo" style="height: 124px; width: auto; display: block; margin: 0 auto;">
+                <img src="./Images/Anothen-logo.svg?v=20260817-6" alt="Anothen" class="logo">
             </div>
 
             <p class="description">
@@ -736,7 +791,7 @@
             blurImg.onload = function() {
                 const overlay = document.getElementById('blurred-overlay');
                 if (overlay) {
-                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817-5')";
+                    overlay.style.backgroundImage = "url('./Images/Slide-web-02-blur.jpg?v=20260817-6')";
                     overlay.style.backgroundSize = "cover";
                     overlay.style.backgroundPosition = "center";
                 }
@@ -745,19 +800,19 @@
             blurImg.onerror = function() {
                 console.log('Blurred image not found');
             };
-            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817-5';
+            blurImg.src = './Images/Slide-web-02-blur.jpg?v=20260817-6';
 
             // Load sharp image for body::before (fondo enfocado)
             const sharpImg = new Image();
             sharpImg.onload = function() {
                 const style = document.createElement('style');
-                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817-5') !important; }`;
+                style.textContent = `body::before { background-image: url('./Images/Slide-web-01.jpg?v=20260817-6') !important; }`;
                 document.head.appendChild(style);
             };
             sharpImg.onerror = function() {
                 console.log('Sharp background image not found');
             };
-            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817-5';
+            sharpImg.src = './Images/Slide-web-01.jpg?v=20260817-6';
         });
 
         // Create floating particles
