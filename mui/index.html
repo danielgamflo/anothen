@@ -203,6 +203,11 @@ p{ max-width:62ch; }
   font-family:var(--serif);
   font-size:1.5rem; letter-spacing:.02em; line-height:1;
 }
+/* Ranuras de logotipo. Mientras no haya archivo se muestra el texto,
+   así la página nunca depende de un asset que falta. */
+.brand-logo{ display:none; height:30px; width:auto; }
+.brand.ok .brand-logo{ display:block; }
+.brand.ok .brand-mark{ display:none; }
 .brand-sub{
   font-size:.5625rem; font-weight:500;
   letter-spacing:.2em; text-transform:uppercase;
@@ -312,10 +317,17 @@ p{ max-width:62ch; }
   overflow:hidden;
   isolation:isolate;
 }
-#field{
+#field, #heroVideo{
   position:absolute; inset:0; z-index:-2;
   width:100%; height:100%;
 }
+/* El video del museo manda cuando existe; si no, queda el campo generado */
+#heroVideo{
+  object-fit:cover; opacity:0;
+  transition:opacity 1.4s var(--ease);
+}
+#heroVideo.on{ opacity:1; z-index:-2; }
+#heroVideo.on ~ #field{ opacity:0; }
 .hero::after{  /* viñeta + piso, para que el texto siempre tenga contraste */
   content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
   background:
@@ -444,6 +456,7 @@ section{ position:relative; }
 .plate img{
   position:absolute; inset:0;
   width:100%; height:100%; object-fit:cover;
+  color:transparent;   /* si la imagen falla no se dibuja el texto alternativo */
 }
 .plate::after{ /* grano, para que el degradado no se vea plástico */
   content:""; position:absolute; inset:0; pointer-events:none;
@@ -577,6 +590,16 @@ footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-b
 }
 .inst-item{ display:grid; gap:.2rem; }
 .inst-item b{ font-size:.8125rem; font-weight:500; letter-spacing:-.01em; color:var(--ink-dim); }
+.inst-logo{
+  display:none; height:36px; width:auto; opacity:.72;
+  /* fuerza a blanco cualquier logo; quitar si llegan SVG monocromos */
+  filter:brightness(0) invert(1);
+  transition:opacity .3s var(--ease);
+}
+.inst-item:hover .inst-logo{ opacity:1; }
+.inst-item.ok .inst-logo{ display:block; }
+.inst-item.ok b{ display:none; }
+.card.ok .inst-logo{ display:block; }
 .inst-item span{ font-size:.625rem; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint); }
 
 .legal{
@@ -632,6 +655,8 @@ footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-b
 <header class="nav" id="nav">
   <div class="wrap nav-in">
     <a href="#top" class="brand" aria-label="MUI — Museo Inmersivo Las Condes">
+      <img class="brand-logo" src="img/logo-mui.svg" alt="MUI"
+           onload="this.closest('.brand').classList.add('ok')" onerror="this.remove()">
       <span class="brand-mark">MUI</span>
       <span class="brand-sub" data-es="Museo Inmersivo Las Condes" data-en="Las Condes Immersive Museum">Museo Inmersivo Las Condes</span>
     </a>
@@ -671,6 +696,8 @@ footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-b
 <!-- ══════════════ HERO ══════════════ -->
 <main id="top">
 <section class="hero">
+  <video id="heroVideo" aria-hidden="true" muted loop playsinline preload="metadata"
+         poster="img/hero-poster.webp"></video>
   <canvas id="field" aria-hidden="true"></canvas>
 
   <div class="wrap">
@@ -752,7 +779,8 @@ footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-b
       </div>
 
       <figure class="plate rv d2">
-        <img src="img/ceiba.jpg" alt="Sala inmersiva del MUI con la obra Ceiba proyectada sobre muros y suelo" loading="lazy" onerror="this.remove()">
+        <img src="img/ceiba.webp" data-alt="img/ceiba.jpg" alt="Sala inmersiva del MUI con la obra Ceiba proyectada sobre muros y suelo" loading="lazy"
+             onerror="var a=this.dataset.alt; if(a){this.dataset.alt='';this.src=a;}else{this.remove();}">
         <figcaption>Josué Ibáñez · <i>Ceiba: el árbol que conecta los mundos</i>, 2026</figcaption>
       </figure>
     </div>
@@ -770,6 +798,8 @@ footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-b
     <div class="cards">
       <div class="card rv">
         <span class="ico" aria-hidden="true">◐</span>
+        <img class="inst-logo" src="img/logo-cpued.svg" alt="Fundación CpueD" style="height:28px;margin-bottom:.2rem"
+             onload="this.closest('.card').classList.add('ok')" onerror="this.remove()">
         <h3 data-es="Funciones adaptadas" data-en="Adapted sessions">Funciones adaptadas</h3>
         <p data-es="En alianza con la Fundación CpueD, el MUI ofrece funciones para personas neurodivergentes con ajustes de luz y sonido, en horarios de menor afluencia." data-en="In partnership with Fundación CpueD, MUI offers sessions for neurodivergent visitors with adjusted light and sound, at quieter times.">En alianza con la Fundación CpueD, el MUI ofrece funciones para personas neurodivergentes con ajustes de luz y sonido, en horarios de menor afluencia.</p>
       </div>
@@ -856,7 +886,8 @@ footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-b
         <p data-es="El MUI ocupa una casona de Isidora Goyenechea levantada por el arquitecto Carlos Cruz Eyzaguirre en los años cuarenta. Por fuera no ha cambiado. Por dentro, ya no queda nada de lo que había." data-en="MUI occupies a house on Isidora Goyenechea built by architect Carlos Cruz Eyzaguirre in the 1940s. From the outside nothing has changed. Inside, nothing of what was there remains.">El MUI ocupa una casona de Isidora Goyenechea levantada por el arquitecto Carlos Cruz Eyzaguirre en los años cuarenta. Por fuera no ha cambiado. Por dentro, ya no queda nada de lo que había.</p>
       </div>
       <figure class="plate wide rv d2">
-        <img src="img/casona.jpg" alt="Fachada de la casona de Isidora Goyenechea que alberga el MUI" loading="lazy" onerror="this.remove()">
+        <img src="img/casona.webp" data-alt="img/casona.jpg" alt="Fachada de la casona de Isidora Goyenechea que alberga el MUI" loading="lazy"
+             onerror="var a=this.dataset.alt; if(a){this.dataset.alt='';this.src=a;}else{this.remove();}">
         <figcaption data-es="Isidora Goyenechea 3400 — la fachada original se conserva intacta" data-en="Isidora Goyenechea 3400 — the original façade is preserved intact">Isidora Goyenechea 3400 — la fachada original se conserva intacta</figcaption>
       </figure>
     </div>
@@ -931,9 +962,9 @@ footer{ background:var(--bg-2); border-top:1px solid var(--line-soft); padding-b
 
     <!-- Los escudos institucionales viven aquí, con jerarquía, no sobre el hero -->
     <div class="inst">
-      <div class="inst-item"><b>Municipalidad de Las Condes</b><span data-es="Propietario" data-en="Owner">Propietario</span></div>
-      <div class="inst-item"><b>Corporación Cultural Las Condes</b><span data-es="Administración" data-en="Operator">Administración</span></div>
-      <div class="inst-item"><b>125 años</b><span data-es="Las Condes, vuelve a ti" data-en="Las Condes, 125 years">Las Condes, vuelve a ti</span></div>
+      <div class="inst-item"><img class="inst-logo" src="img/logo-municipalidad.svg" alt="Municipalidad de Las Condes" onload="this.closest('.inst-item').classList.add('ok')" onerror="this.remove()"><b>Municipalidad de Las Condes</b><span data-es="Propietario" data-en="Owner">Propietario</span></div>
+      <div class="inst-item"><img class="inst-logo" src="img/logo-corporacion.svg" alt="Corporación Cultural Las Condes" onload="this.closest('.inst-item').classList.add('ok')" onerror="this.remove()"><b>Corporación Cultural Las Condes</b><span data-es="Administración" data-en="Operator">Administración</span></div>
+      <div class="inst-item"><img class="inst-logo" src="img/logo-125.svg" alt="125 años" onload="this.closest('.inst-item').classList.add('ok')" onerror="this.remove()"><b>125 años</b><span data-es="Las Condes, vuelve a ti" data-en="Las Condes, 125 years">Las Condes, vuelve a ti</span></div>
     </div>
 
     <div class="legal">
@@ -1014,6 +1045,10 @@ body::after{
 
     var raf;
     function loop(t){ draw(t); raf = requestAnimationFrame(loop); }
+    window.stopField = function(){
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      cv.style.display = "none";
+    };
 
     size(); 
     if (reduce) { draw(0); } else { raf = requestAnimationFrame(loop); }
@@ -1032,6 +1067,42 @@ body::after{
           else if (!e.isIntersecting && raf) { cancelAnimationFrame(raf); raf = null; }
         });
       }, { threshold: 0 }).observe(cv);
+    }
+  }
+
+  /* ─────────── Video del hero ───────────
+     Si existe video del museo sustituye al campo generado y apaga su
+     bucle de dibujo. Con movimiento reducido se queda el póster quieto. */
+  var vid = document.getElementById("heroVideo");
+  if (vid) {
+    function useVideo(){
+      vid.classList.add("on");
+      if (window.stopField) window.stopField();
+    }
+    function dropVideo(){ if (vid.parentNode) vid.remove(); }
+
+    // WebM primero por tamaño, MP4 como respaldo universal
+    var files = [["video/hero.webm","video/webm"],["video/hero.mp4","video/mp4"]], failed = 0;
+    files.forEach(function(f){
+      var el = document.createElement("source");
+      el.src = f[0]; el.type = f[1];
+      el.addEventListener("error", function(){
+        if (++failed === files.length) dropVideo();   // agotadas todas las fuentes
+      }, { once:true });
+      vid.appendChild(el);
+    });
+
+
+    // loadeddata sólo llega si hay un primer fotograma real
+    vid.addEventListener("loadeddata", useVideo, { once:true });
+    vid.addEventListener("error", dropVideo, { once:true });
+
+    // con movimiento reducido: primer fotograma quieto, sin reproducir
+    vid.preload = reduce ? "metadata" : "auto";
+    vid.load();
+    if (!reduce) {
+      var pr = vid.play();
+      if (pr && pr.catch) pr.catch(function(){ /* autoplay bloqueado: queda el póster */ });
     }
   }
 

@@ -19,19 +19,42 @@ python3 -m http.server 8080 --directory mui
 
 Para deploy de demostración: Netlify Drop o GitHub Pages, con URL privada.
 
-### Poner las imágenes reales
+### Dónde van los archivos
 
-Hay dos huecos preparados. Si el archivo no existe, cae con gracia a un degradado
-que se ve intencional, así que se puede mostrar tal cual:
+Todo se detecta solo. Si un archivo no está, la página usa su respaldo y se ve
+bien igual — no hay que tocar código para probar.
 
-| Archivo            | Dónde aparece        | Proporción sugerida |
-|--------------------|----------------------|---------------------|
-| `img/ceiba.jpg`    | Sección de la muestra| vertical 4:5        |
-| `img/casona.jpg`   | Sección del museo    | horizontal 16:10    |
+```
+mui/
+├── img/
+│   ├── logo-mui.svg              → marca en la barra superior
+│   ├── logo-municipalidad.svg    → pie institucional
+│   ├── logo-corporacion.svg      → pie institucional
+│   ├── logo-125.svg              → pie institucional
+│   ├── logo-cpued.svg            → tarjeta de funciones adaptadas
+│   ├── ceiba.webp                → sección de la muestra (vertical 4:5)
+│   ├── casona.webp               → sección del museo (horizontal 16:10)
+│   └── hero-poster.webp          → primer fotograma del video
+└── video/
+    ├── hero.webm                 → fondo del hero (preferido, más liviano)
+    └── hero.mp4                  → respaldo para Safari
+```
 
-El hero usa un campo generado por canvas, no una imagen. Si más adelante hay
-video del museo, reemplaza el `<canvas id="field">` por un `<video>` con
-`muted playsinline loop` y un póster.
+**Respaldos automáticos, por si falta algo:**
+
+| Si falta… | La página… |
+|---|---|
+| `logo-*.svg` | escribe el nombre en texto, con la tipografía del sitio |
+| `ceiba.webp` | prueba `ceiba.jpg`; si tampoco está, deja el degradado |
+| `casona.webp` | prueba `casona.jpg`; si tampoco está, deja el degradado |
+| `hero.webm` y `hero.mp4` | mantiene el campo de luz generado por canvas |
+
+Los logos se fuerzan a blanco por CSS (`filter:brightness(0) invert(1)`) para que
+peguen sobre el fondo oscuro. Si llegan SVG monocromos en blanco, quitar ese filtro
+en la regla `.inst-logo`.
+
+El video del hero debe ir **sin audio, sin cortes y sin texto quemado**: es fondo,
+no contenido. Cuando carga, el canvas generado se apaga solo para no gastar batería.
 
 ---
 
