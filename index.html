@@ -8,11 +8,11 @@
     <!-- Favicon. Las versiones chicas llevan el trazo de la cruz engrosado a
          proposito: a 16px el trazo original mide menos de un pixel y el
          navegador lo difumina en gris. Las grandes van sin engrosar. -->
-    <link rel="icon" href="./favicon.ico?v=20260818" sizes="any">
-    <link rel="icon" type="image/png" sizes="16x16" href="./Images/favicon-16.png?v=20260818">
-    <link rel="icon" type="image/png" sizes="32x32" href="./Images/favicon-32.png?v=20260818">
-    <link rel="icon" type="image/png" sizes="48x48" href="./Images/favicon-48.png?v=20260818">
-    <link rel="apple-touch-icon" sizes="180x180" href="./Images/apple-touch-icon.png?v=20260818">
+    <link rel="icon" href="./favicon.ico?v=20260823" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="./Images/favicon-16.png?v=20260823">
+    <link rel="icon" type="image/png" sizes="32x32" href="./Images/favicon-32.png?v=20260823">
+    <link rel="icon" type="image/png" sizes="48x48" href="./Images/favicon-48.png?v=20260823">
+    <link rel="apple-touch-icon" sizes="180x180" href="./Images/apple-touch-icon.png?v=20260823">
     <meta name="theme-color" content="#e8e8e0">
 
     <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
@@ -161,32 +161,32 @@
         /* Capas en decenas: deja hueco para insertar elementos entre ellas
            (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.webp?v=20260818');
+            background-image: url('./Images/parallax/slide-01.webp?v=20260823');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 10;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.webp?v=20260818');
+            background-image: url('./Images/parallax/slide-02.webp?v=20260823');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 20;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.webp?v=20260818');
+            background-image: url('./Images/parallax/slide-03.webp?v=20260823');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.webp?v=20260818');
+            background-image: url('./Images/parallax/slide-04.webp?v=20260823');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 40;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.webp?v=20260818');
+            background-image: url('./Images/parallax/slide-05.webp?v=20260823');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 50;
         }
@@ -415,6 +415,20 @@
             animation: fadeIn 0.5s ease;
         }
 
+        /* Solo aparece si el envio falla de verdad */
+        .error-message {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 14px;
+            color: #8a4b3c;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -631,23 +645,23 @@
                Solo cambia el archivo; el encuadre y las animaciones siguen
                definidos arriba. */
             .parallax-layer-01 {
-                background-image: url('./Images/parallax/slide-01-movil.webp?v=20260818');
+                background-image: url('./Images/parallax/slide-01-movil.webp?v=20260823');
             }
 
             .parallax-layer-02 {
-                background-image: url('./Images/parallax/slide-02-movil.webp?v=20260818');
+                background-image: url('./Images/parallax/slide-02-movil.webp?v=20260823');
             }
 
             .parallax-layer-04 {
-                background-image: url('./Images/parallax/slide-04-movil.webp?v=20260818');
+                background-image: url('./Images/parallax/slide-04-movil.webp?v=20260823');
             }
 
             .parallax-layer-05 {
-                background-image: url('./Images/parallax/slide-05-movil.webp?v=20260818');
+                background-image: url('./Images/parallax/slide-05-movil.webp?v=20260823');
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/proximamente-movil.svg?v=20260818');
+                background-image: url('./Images/proximamente-movil.svg?v=20260823');
                 background-size: var(--px-ancho) auto;
                 background-position: left 50% bottom var(--px-base);
                 background-repeat: no-repeat;
@@ -807,7 +821,7 @@
         <!-- TOP SECTION: Logo, Separator, Description -->
         <div class="content-section top">
             <div class="logo-area" id="logo">
-                <img src="./Images/Anothen-logo.svg?v=20260818" alt="Anothen" class="logo">
+                <img src="./Images/Anothen-logo.svg?v=20260823" alt="Anothen" class="logo">
             </div>
 
             <p class="description">
@@ -832,6 +846,10 @@
 
             <div class="success-message" id="successMessage">
                 ✓ Gracias. Te notificaremos pronto.
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                No pudimos guardar tu correo. Intenta de nuevo en un momento.
             </div>
 
             <p class="subscription-hint">
@@ -1025,25 +1043,53 @@
 
         const form = document.getElementById('subscriptionForm');
         const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
 
-        form.addEventListener('submit', function(e) {
+        // Formulario embebido de MailerLite (cuenta 2591302). El endpoint
+        // admite CORS, asi que se puede leer la respuesta y confirmar solo
+        // cuando la suscripcion se guardo de verdad.
+        const MAILERLITE = 'https://assets.mailerlite.com/jsonp/2591302/forms/196564541967959680/subscribe';
+
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const email = form.querySelector('input[type="email"]').value;
+            const input = form.querySelector('input[type="email"]');
+            const boton = form.querySelector('button[type="submit"]');
+            const email = input.value.trim();
+            if (!email) return;
 
-            // Here you would typically send the email to your backend
-            console.log('Email subscribed:', email);
+            // Bloquear mientras viaja, para que un doble clic no mande dos veces
+            const textoOriginal = boton.textContent;
+            boton.disabled = true;
+            boton.textContent = 'Enviando...';
+            errorMessage.classList.remove('show');
 
-            // Show success message
-            form.style.display = 'none';
-            successMessage.classList.add('show');
+            const datos = new FormData();
+            datos.append('fields[email]', email);
+            datos.append('ml-submit', '1');
+            datos.append('anticsrf', 'true');
 
-            // Optional: Reset form after 3 seconds
-            setTimeout(() => {
-                form.reset();
-                form.style.display = 'flex';
-                successMessage.classList.remove('show');
-            }, 3000);
+            try {
+                const r = await fetch(MAILERLITE, { method: 'POST', body: datos });
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+
+                setTimeout(() => {
+                    form.reset();
+                    form.style.display = 'flex';
+                    successMessage.classList.remove('show');
+                    boton.disabled = false;
+                    boton.textContent = textoOriginal;
+                }, 4000);
+            } catch (err) {
+                // Sin conexion o servicio caido: se avisa en vez de fingir exito
+                console.error('No se pudo suscribir:', err);
+                errorMessage.classList.add('show');
+                boton.disabled = false;
+                boton.textContent = textoOriginal;
+            }
         });
 
         // Prevent zoom/pinch on mobile
