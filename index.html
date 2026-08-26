@@ -8,12 +8,12 @@
     <!-- Favicon. Las versiones chicas llevan el trazo de la cruz engrosado a
          proposito: a 16px el trazo original mide menos de un pixel y el
          navegador lo difumina en gris. Las grandes van sin engrosar. -->
-    <link rel="icon" href="./favicon.ico?v=20260823" sizes="any">
-    <link rel="icon" type="image/png" sizes="16x16" href="./Images/favicon-16.png?v=20260823">
-    <link rel="icon" type="image/png" sizes="32x32" href="./Images/favicon-32.png?v=20260823">
-    <link rel="icon" type="image/png" sizes="48x48" href="./Images/favicon-48.png?v=20260823">
-    <link rel="apple-touch-icon" sizes="180x180" href="./Images/apple-touch-icon.png?v=20260823">
-    <meta name="theme-color" content="#e8e8e0">
+    <link rel="icon" href="./favicon.ico?v=20260825" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="./Images/favicon-16.png?v=20260825">
+    <link rel="icon" type="image/png" sizes="32x32" href="./Images/favicon-32.png?v=20260825">
+    <link rel="icon" type="image/png" sizes="48x48" href="./Images/favicon-48.png?v=20260825">
+    <link rel="apple-touch-icon" sizes="180x180" href="./Images/apple-touch-icon.png?v=20260825">
+    <meta name="theme-color" content="#e9e9dd">
 
     <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -97,6 +97,16 @@
             }
         }
 
+        /* Fade in animation for progressive loading */
+        @keyframes fadeInView {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
         /* Slide up with zoom out - slide 03 */
         @keyframes slideUpZoomOut {
             0% {
@@ -156,37 +166,39 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            animation: fadeInView 1s ease-out 0s both;
+            animation-play-state: paused;
         }
 
         /* Capas en decenas: deja hueco para insertar elementos entre ellas
            (los pájaros van en 25, entre slide-02 y slide-03) */
         .parallax-layer-01 {
-            background-image: url('./Images/parallax/slide-01.webp?v=20260823');
+            background-image: url('./Images/parallax/slide-01.webp?v=20260825');
             animation: parallaxZoomOut 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 10;
         }
 
         .parallax-layer-02 {
-            background-image: url('./Images/parallax/slide-02.webp?v=20260823');
+            background-image: url('./Images/parallax/slide-02.webp?v=20260825');
             animation: parallaxZoomOutFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 20;
         }
 
         .parallax-layer-03 {
-            background-image: url('./Images/parallax/slide-03.webp?v=20260823');
+            background-image: url('./Images/parallax/slide-03.webp?v=20260825');
             animation: slideUpZoomOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
             z-index: 30;
             opacity: 0;
         }
 
         .parallax-layer-04 {
-            background-image: url('./Images/parallax/slide-04.webp?v=20260823');
+            background-image: url('./Images/parallax/slide-04.webp?v=20260825');
             animation: slideUpZoomOut04 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 40;
         }
 
         .parallax-layer-05 {
-            background-image: url('./Images/parallax/slide-05.webp?v=20260823');
+            background-image: url('./Images/parallax/slide-05.webp?v=20260825');
             animation: slideUpZoomOut05 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             z-index: 50;
         }
@@ -252,7 +264,8 @@
             text-align: center;
             z-index: 10;
             color: #403e2c;
-            animation: fadeInUp 0.8s ease-out 1.7s both, breathe 6s ease-in-out 2.7s infinite;
+            opacity: 0;
+            animation: fadeInView 0.7s ease-out 0.2s both, breathe 6s ease-in-out 2.7s infinite;
             cursor: pointer;
             transition: transform 0.3s ease;
         }
@@ -330,7 +343,8 @@
             white-space: nowrap;
             font-weight: 300;
             letter-spacing: 0.02em;
-            animation: fadeInUp 0.8s ease-out 2.2s both;
+            opacity: 0;
+            animation: fadeInView 0.7s ease-out 0.4s both;
         }
 
         /* En desktop la frase va en una sola linea: se anula el salto y queda
@@ -348,7 +362,8 @@
             flex-wrap: wrap;
             justify-content: center;
             max-width: 100%;
-            animation: fadeInUp 0.8s ease-out 2.3s both;
+            opacity: 0;
+            animation: fadeInView 0.7s ease-out 0.6s both;
         }
 
         .subscription-form input {
@@ -571,6 +586,8 @@
             height: 100%;
             z-index: 25;
             pointer-events: none;
+            opacity: 0;
+            animation: fadeInView 0.7s ease-out 3s both;
         }
 
         /* Subscription hint */
@@ -582,9 +599,18 @@
             margin-top: 1rem;
             line-height: 1.5;
             font-weight: 300;
-            opacity: 0.8;
-            animation: fadeInUp 0.8s ease-out 2.4s both;
+            opacity: 0;
+            animation: fadeInView 0.7s ease-out 0.8s both;
             white-space: nowrap;
+        }
+
+        /* Instagram link */
+        #instagram-link svg {
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        #instagram-link:hover svg {
+            transform: scale(1.2);
         }
 
         /* Responsive design */
@@ -645,23 +671,23 @@
                Solo cambia el archivo; el encuadre y las animaciones siguen
                definidos arriba. */
             .parallax-layer-01 {
-                background-image: url('./Images/parallax/slide-01-movil.webp?v=20260823');
+                background-image: url('./Images/parallax/slide-01-movil.webp?v=20260825');
             }
 
             .parallax-layer-02 {
-                background-image: url('./Images/parallax/slide-02-movil.webp?v=20260823');
+                background-image: url('./Images/parallax/slide-02-movil.webp?v=20260825');
             }
 
             .parallax-layer-04 {
-                background-image: url('./Images/parallax/slide-04-movil.webp?v=20260823');
+                background-image: url('./Images/parallax/slide-04-movil.webp?v=20260825');
             }
 
             .parallax-layer-05 {
-                background-image: url('./Images/parallax/slide-05-movil.webp?v=20260823');
+                background-image: url('./Images/parallax/slide-05-movil.webp?v=20260825');
             }
 
             .parallax-layer-03 {
-                background-image: url('./Images/proximamente-movil.svg?v=20260823');
+                background-image: url('./Images/proximamente-movil.svg?v=20260825');
                 background-size: var(--px-ancho) auto;
                 background-position: left 50% bottom var(--px-base);
                 background-repeat: no-repeat;
@@ -821,7 +847,7 @@
         <!-- TOP SECTION: Logo, Separator, Description -->
         <div class="content-section top">
             <div class="logo-area" id="logo">
-                <img src="./Images/Anothen-logo.svg?v=20260823" alt="Anothen" class="logo">
+                <img src="./Images/Anothen-logo.svg?v=20260825" alt="Anothen" class="logo">
             </div>
 
             <p class="description">
@@ -855,10 +881,58 @@
             <p class="subscription-hint">
                 Síguenos de cerca. Sé el primero en saber cuándo llegamos.
             </p>
+
+            <a href="https://www.instagram.com/anothen.cl/" target="_blank" rel="noopener noreferrer" id="instagram-link" style="display: flex; align-items: center; justify-content: center; margin-top: 2rem; opacity: 0; animation: fadeInView 0.7s ease-out 1s both;">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#897c4b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="4.5" ry="4.5"></rect>
+                    <circle cx="12" cy="12" r="3.5"></circle>
+                    <circle cx="17.5" cy="6.5" r="1"></circle>
+                </svg>
+            </a>
         </div>
     </div>
 
     <script>
+        // Preload background images before fade-in animation
+        function preloadBackgroundImages() {
+            const images = [
+                './Images/parallax/slide-01.webp?v=20260825',
+                './Images/parallax/slide-02.webp?v=20260825',
+                './Images/parallax/slide-03.webp?v=20260825',
+                './Images/parallax/slide-04.webp?v=20260825',
+                './Images/parallax/slide-05.webp?v=20260825'
+            ];
+
+            let loadedCount = 0;
+            const totalImages = images.length;
+
+            images.forEach(src => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        // All images loaded, enable fade-in animations
+                        document.querySelectorAll('.parallax-bg').forEach(el => {
+                            el.style.animationPlayState = 'running';
+                        });
+                    }
+                };
+                img.onerror = () => {
+                    // Even if one fails, continue
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        document.querySelectorAll('.parallax-bg').forEach(el => {
+                            el.style.animationPlayState = 'running';
+                        });
+                    }
+                };
+                img.src = src;
+            });
+        }
+
+        // Start preloading immediately
+        preloadBackgroundImages();
+
         // Create floating particles
         function createParticles() {
             const container = document.getElementById('particles-container');
@@ -1261,7 +1335,8 @@
                 }
                 requestAnimationFrame(frame);
             }
-            frame();
+            // Delay canvas render by 3 seconds to allow images to load completely
+            setTimeout(frame, 3000);
         })();
     </script>
 </body>
